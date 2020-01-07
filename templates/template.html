@@ -35,11 +35,11 @@
             <li><a href="/">Home</a></li>
             {% if oidc.user_loggedin %}
             <li><a href="/import">Import Users</a></li>
-            <li><a id="profile-button" href="{{ url_for("profile") }}">My Profile</a></li>
+            <li><a id="profile-button" href="{{ url_for('profile', _external='True', _scheme='https') }}">My Profile</a></li>
             {% endif %}
         </ul>
         {% if oidc.user_loggedin %}
-        <form method="post" action="{{ url_for("logout") }}" class="navbar-form navbar-right">
+        <form method="post" action="{{ url_for('logout', _external='True', _scheme='https') }}" class="navbar-form navbar-right">
             <button id="logout-button" type="submit" class="btn btn-danger">Logout</button>
         </form>
         {% endif %}
