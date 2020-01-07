@@ -1,0 +1,17 @@
+{% extends "template.html" %}
+{% block content %}
+<div>
+    <h2>Import User</h2>
+    <p>Hello, <span>{{ profile.email }}</span>.
+    </p>
+
+</div>
+<div class="upload-btn-wrapper">
+<form action="upload.html" method="post" enctype="multipart/form-data">
+    <input type="file" name="fileupload" id="fileToUpload" class="btn">
+    </br>
+    <input type="submit" value="Upload File" name="submit">
+</form>
+</div>
+
+{% endblock content %}

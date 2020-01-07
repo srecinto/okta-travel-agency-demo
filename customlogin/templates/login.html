@@ -1,0 +1,23 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div id="sign-in-widget"></div>
+<script type="text/javascript">
+  new OktaSignIn({
+    baseUrl: "https://aaoktapoc.oktapreview.com",
+    clientId: "0oap2sll0dkM7sj4y0h7",
+    redirectUri: "http://localhost:8080/authorization-code/callback",
+    logo: 'https://logo.clearbit.com/fundera.com',
+    authParams: {
+      issuer: "https://aaoktapoc.oktapreview.com/oauth2/default",
+      responseType: 'code',
+      state: '{{state}}',
+      display: 'page',
+      scopes: ['openid', 'profile', 'email']
+    }
+  }).renderEl(
+    { el: '#sign-in-widget' },
+    function (res) {}
+  );
+</script>
+{% endblock content %}
