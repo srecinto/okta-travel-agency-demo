@@ -1,0 +1,57 @@
+{% extends "template.html" %}
+
+{% block content %}
+<div>
+    <h2>My Profile</h2>
+    <p>Hello, <span>{{ profile.email }}</span>. Below is the information that was read with your <a
+            href="https://developer.okta.com/docs/api/resources/oidc.html#get-user-information"
+            target="_blank">Access Token</a>.
+    </p>
+
+</div>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Claim</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for key, claim in profile.items() %}
+    <tr>
+        <td>{{ key }}</td>
+        <td id="claim-{{ key }}">
+            {{ claim }}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+
+
+</table>
+
+
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% for i in applist %}
+         <tr>
+            <td>{{ i.appname }}</td>
+            <td id="id{{ loop.index }}">
+                <a href="{{ i.appurl }}"><img src="{{ i.applogo }}"></a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+
+</table>
+{% endblock content %}
