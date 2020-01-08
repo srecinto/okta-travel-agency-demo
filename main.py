@@ -6,6 +6,7 @@ import csv
 from config import default_settings
 
 from flask import Flask, render_template, url_for, redirect, session, jsonify, request
+from flask import send_from_directory
 from flask_oidc import OpenIDConnect
 from utils.okta import OktaAuth, OktaAdmin
 
@@ -27,12 +28,12 @@ with open('client_secrets.json', 'w') as outfile:
             "userinfo_uri": "{0}/v1/userinfo".format(default_settings["issuer"])
         }
     }
-    
+
     # print("oidc_config: {0}".format(json.dumps(oidc_config, indent=4, sort_keys=True)))
     # print("default_settings: {0}".format(default_settings))
-    
+
     json.dump(oidc_config, outfile, indent=4, sort_keys=True)
-    
+
     app_config = {
         'SECRET_KEY': default_settings["app_secret_key"],
         'OIDC_CLIENT_SECRETS': 'client_secrets.json',
@@ -44,13 +45,21 @@ with open('client_secrets.json', 'w') as outfile:
         'OVERWRITE_REDIRECT_URI': default_settings["redirect_uri"],
         'OIDC_CALLBACK_ROUTE': '/authorization-code/callback'
     }
-    
+
     # print("app_config: {0}".format(app_config))
 
 app.config.update(app_config)
 
 
 oidc = OpenIDConnect(app)
+
+@app.route('/<path:filename>')
+def serve_static_html(filename):
+    """ serve_static_html() generic route function to serve files in the 'static' folder """
+    print("serve_static_html('{0}')".format(filename))
+    root_dir = os.path.dirname(os.path.realpath(__file__))
+    return send_from_directory(os.path.join(root_dir, 'static'), filename)
+
 
 @app.route("/")
 def home():
