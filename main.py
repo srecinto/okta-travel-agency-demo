@@ -9,13 +9,36 @@ from flask_oidc import OpenIDConnect
 from utils.okta import OktaAuth, OktaAdmin
 
 app = Flask(__name__)
+
+with open('client_secrets.json', 'w') as outfile:
+    oidc_config = {
+        "web": {
+            "auth_uri": "{0}/v1/authorize".format(default_settings["issuer"]),
+            "client_id": default_settings["client_id"],
+            "client_secret": default_settings["client_secret"],
+            "redirect_uris": [
+                default_settings["redirect_uri"]
+            ],
+            "okta_api_token": default_settings["okta_api_token"],
+            "issuer": "{0}".format(default_settings["issuer"]),
+            "token_uri": "{0}/v1/token".format(default_settings["issuer"]),
+            "token_introspection_uri": "{0}/v1/introspect".format(default_settings["issuer"]),
+            "userinfo_uri": "{0}/v1/userinfo".format(default_settings["issuer"])
+        }
+    }
+    
+    json.dump(oidc_config, outfile)
+
 app.config.update({
-    'SECRET_KEY': 'SomethingNotEntirelySecret',
+    'SECRET_KEY': default_settings["app_secret_key"],
     'OIDC_CLIENT_SECRETS': 'client_secrets.json',
+    'OIDC_RESOURCE_SERVER_ONLY': True,
     'OIDC_DEBUG': True,
     'OIDC_COOKIE_SECURE': True,
-    'OIDC_SCOPES': ["openid", "profile"],
-    'OVERWRITE_REDIRECT_URI': 'https://fa5b4be2a1d7479989c0cb3a8c57628c.vfs.cloud9.us-east-2.amazonaws.com/authorization-code/callback',
+    'OIDC_USER_INFO_ENABLED': True,
+    'OIDC_INTROSPECTION_AUTH_METHOD': 'bearer',
+    'OIDC_SCOPES': ["openid", "profile", "email", "offline_access"],
+    # 'OVERWRITE_REDIRECT_URI': 'https://fa5b4be2a1d7479989c0cb3a8c57628c.vfs.cloud9.us-east-2.amazonaws.com/authorization-code/callback',
     'OIDC_CALLBACK_ROUTE': '/authorization-code/callback'
 })
 
@@ -43,6 +66,8 @@ def login():
 @app.route("/profile")
 def profile():
     info = oidc.user_getinfo(["sub", "name", "email", "locale"])
+    access_token = oidc.get_access_token()
+    print("access_token: {0}".format(access_token))
     okta_admin = OktaAdmin(default_settings)
     user = okta_admin.get_user(info["sub"])
     # user_profile = user["profile"]

@@ -5,6 +5,9 @@ okta-oidc-tck/
 build2/
 yarn-error.log
 
+#App ignores
+client_secrets.json
+
 #Cloud9
 .c9
 
