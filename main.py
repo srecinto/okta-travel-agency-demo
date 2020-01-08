@@ -28,6 +28,7 @@ with open('client_secrets.json', 'w') as outfile:
     }
     
     # print("oidc_config: {0}".format(json.dumps(oidc_config, indent=4, sort_keys=True)))
+    # print("default_settings: {0}".format(default_settings))
     
     json.dump(oidc_config, outfile, indent=4, sort_keys=True)
     
@@ -39,7 +40,7 @@ with open('client_secrets.json', 'w') as outfile:
         'OIDC_USER_INFO_ENABLED': True,
         'OIDC_INTROSPECTION_AUTH_METHOD': 'bearer',
         'OIDC_SCOPES': ["openid", "profile", "email", "offline_access"],
-        # 'OVERWRITE_REDIRECT_URI': 'https://fa5b4be2a1d7479989c0cb3a8c57628c.vfs.cloud9.us-east-2.amazonaws.com/authorization-code/callback',
+        'OVERWRITE_REDIRECT_URI': default_settings["redirect_uri"],
         'OIDC_CALLBACK_ROUTE': '/authorization-code/callback'
     }
     
@@ -71,10 +72,11 @@ def login():
 @app.route("/profile")
 def profile():
     info = oidc.user_getinfo(["sub", "name", "email", "locale"])
-    access_token = oidc.get_access_token()
-    print("access_token: {0}".format(access_token))
+    # access_token = oidc.get_access_token()
+    # print("access_token: {0}".format(access_token))
     okta_admin = OktaAdmin(default_settings)
     user = okta_admin.get_user(info["sub"])
+    print("user: {0}".format(user))
     # user_profile = user["profile"]
     # app_user = okta_admin.get_user_application_by_current_client_id(user["id"])
     app_info = okta_admin.get_applications_by_user_id(user["id"])
