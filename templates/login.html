@@ -4,16 +4,16 @@
 <div id="sign-in-widget"></div>
 <script type="text/javascript">
   new OktaSignIn({
-    baseUrl: "https://aaoktapoc.oktapreview.com",
-    clientId: "0oap2sll0dkM7sj4y0h7",
+    baseUrl: "{{config.okta_org_name}}",
+    clientId: "{{config.client_id}}",
     redirectUri: "{{config.redirect_uri}}",
     logo: 'https://logo.clearbit.com/fundera.com',
     authParams: {
-      issuer: "https://aaoktapoc.oktapreview.com/oauth2/ausp5m1ryjNM89zm00h7",
+      issuer: "{{config.issuer}}",
       responseType: 'code',
       state: '{{state}}',
       display: 'page',
-      scopes: ['openid', 'profile', 'email']
+      scopes: ['openid', 'profile', 'email', 'offline_access']
     }
   }).renderEl(
     { el: '#sign-in-widget' },
