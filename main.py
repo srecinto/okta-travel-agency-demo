@@ -59,15 +59,12 @@ def home():
 
 @app.route("/login")
 def login():
-    bu = oidc.client_secrets['issuer'].split('/oauth2')[0]
-    cid = oidc.client_secrets['client_id']
-
     destination = "{0}/profile".format(default_settings["settings"]["app_base_url"])
     state = {
         'csrf_token': session['oidc_csrf_token'],
         'destination': oidc.extra_data_serializer.dumps(destination).decode('utf-8')
     }
-    return render_template("login.html", config=default_settings, oidc=oidc, baseUri=bu, clientId=cid, state=base64.b64encode(bytes(json.dumps(state),'utf-8')).decode('utf-8'))
+    return render_template("login.html", config=default_settings, oidc=oidc, state=base64.b64encode(bytes(json.dumps(state),'utf-8')).decode('utf-8'))
 
 
 @app.route("/profile")
