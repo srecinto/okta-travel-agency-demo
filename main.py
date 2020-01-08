@@ -27,20 +27,25 @@ with open('client_secrets.json', 'w') as outfile:
         }
     }
     
-    json.dump(oidc_config, outfile)
+    # print("oidc_config: {0}".format(json.dumps(oidc_config, indent=4, sort_keys=True)))
+    
+    json.dump(oidc_config, outfile, indent=4, sort_keys=True)
+    
+    app_config = {
+        'SECRET_KEY': default_settings["app_secret_key"],
+        'OIDC_CLIENT_SECRETS': 'client_secrets.json',
+        'OIDC_DEBUG': True,
+        'OIDC_COOKIE_SECURE': True,
+        'OIDC_USER_INFO_ENABLED': True,
+        'OIDC_INTROSPECTION_AUTH_METHOD': 'bearer',
+        'OIDC_SCOPES': ["openid", "profile", "email", "offline_access"],
+        # 'OVERWRITE_REDIRECT_URI': 'https://fa5b4be2a1d7479989c0cb3a8c57628c.vfs.cloud9.us-east-2.amazonaws.com/authorization-code/callback',
+        'OIDC_CALLBACK_ROUTE': '/authorization-code/callback'
+    }
+    
+    # print("app_config: {0}".format(app_config))
 
-app.config.update({
-    'SECRET_KEY': default_settings["app_secret_key"],
-    'OIDC_CLIENT_SECRETS': 'client_secrets.json',
-    'OIDC_RESOURCE_SERVER_ONLY': True,
-    'OIDC_DEBUG': True,
-    'OIDC_COOKIE_SECURE': True,
-    'OIDC_USER_INFO_ENABLED': True,
-    'OIDC_INTROSPECTION_AUTH_METHOD': 'bearer',
-    'OIDC_SCOPES': ["openid", "profile", "email", "offline_access"],
-    # 'OVERWRITE_REDIRECT_URI': 'https://fa5b4be2a1d7479989c0cb3a8c57628c.vfs.cloud9.us-east-2.amazonaws.com/authorization-code/callback',
-    'OIDC_CALLBACK_ROUTE': '/authorization-code/callback'
-})
+app.config.update(app_config)
 
 
 oidc = OpenIDConnect(app)
