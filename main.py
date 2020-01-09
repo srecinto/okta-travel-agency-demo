@@ -50,7 +50,6 @@ with open('client_secrets.json', 'w') as outfile:
 
 app.config.update(app_config)
 
-
 oidc = OpenIDConnect(app)
 
 @app.route('/<path:filename>')
@@ -96,7 +95,6 @@ def profile():
         app_dict= dict(appname=app_name,appurl=app_url,applogo=app_logo)
         app_list.append(app_dict)
 
-
     print(info)
     print(app_list)
     return render_template("profile.html", profile=info, oidc=oidc, applist=app_list)
@@ -108,13 +106,15 @@ def logout():
 
     return redirect(url_for("home", _external="True", _scheme="https"))
 
+
 @app.route("/import")
 def importusers():
     info = oidc.user_getinfo(["sub", "name", "email", "locale"])
 
     return render_template("import.html", profile=info, oidc=oidc)
 
-@app.route('/upload.html',methods = ['POST'])
+
+@app.route('/upload',methods = ['POST'])
 def upload_route_summary():
     if request.method == 'POST':
         info = oidc.user_getinfo(["sub", "name", "email", "locale"])
