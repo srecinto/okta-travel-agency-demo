@@ -1,53 +1,468 @@
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="head">
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
 
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <title>The Project | Home</title>
+    <meta name="author" content="author">
 
-    <script src="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.13.0/js/okta-sign-in.min.js"
-            type="text/javascript"></script>
-    <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.13.0/css/okta-sign-in.min.css"
-          type="text/css" rel="stylesheet"/>
-    <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.13.0/css/okta-theme.css"
-          type="text/css" rel="stylesheet"/>
-    <style>
-        body.login {
-            background-color: #f9f9f9;
-        }
-        #okta-sign-in {
-            min-height: 0 !important;
-        }
-    </style>
+    <!-- Mobile Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon.ico">
 
-    <title>Okta Hosted Login in Flask</title>
-</head>
-<body id="samples">
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <ul class="nav navbar-nav">
-            <li><a href="/">Home</a></li>
-            {% if oidc.user_loggedin %}
-            <li><a href="/import">Import Users</a></li>
-            <li><a id="profile-button" href="{{ url_for('profile', _external='True', _scheme='https') }}">My Profile</a></li>
-            {% endif %}
-        </ul>
-        {% if oidc.user_loggedin %}
-        <form method="post" action="{{ url_for('logout', _external='True', _scheme='https') }}" class="navbar-form navbar-right">
-            <button id="logout-button" type="submit" class="btn btn-danger">Logout</button>
-        </form>
-        {% endif %}
+    <!-- Web Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=PT+Serif" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Font Awesome CSS -->
+    <link href="fonts/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Plugins -->
+    <link href="plugins/magnific-popup/magnific-popup.css" rel="stylesheet">
+    <link href="plugins/rs-plugin-5/css/settings.css" rel="stylesheet">
+    <link href="plugins/rs-plugin-5/css/layers.css" rel="stylesheet">
+    <link href="plugins/rs-plugin-5/css/navigation.css" rel="stylesheet">
+    <link href="css/animations.css" rel="stylesheet">
+    <link href="plugins/slick/slick.css" rel="stylesheet">
+
+    <!-- The Project's core CSS file -->
+    <!-- Use css/rtl_style.css for RTL version -->
+    <link href="css/style.css" rel="stylesheet" >
+    <!-- The Project's Typography CSS file, includes used fonts -->
+    <!-- Used font for body: Roboto -->
+    <!-- Used font for headings: Raleway -->
+    <!-- Use css/rtl_typography-default.css for RTL version -->
+    <link href="css/typography-default.css" rel="stylesheet" >
+    <!-- Color Scheme (In order to change the color scheme, replace the blue.css with the color scheme that you prefer) -->
+    <link href="css/skins/light_blue.css" rel="stylesheet">
+
+    <!-- Custom css -->
+    <link href="css/custom.css" rel="stylesheet">
+
+  </head>
+
+  <!-- body classes:  -->
+  <!-- "boxed": boxed layout mode e.g. <body class="boxed"> -->
+  <!-- "pattern-1 ... pattern-9": background patterns for boxed layout mode e.g. <body class="boxed pattern-1"> -->
+  <!-- "transparent-header": makes the header transparent and pulls the banner to top -->
+  <!-- "gradient-background-header": applies gradient background to header -->
+  <!-- "page-loader-1 ... page-loader-6": add a page loader to the page (more info @components-page-loaders.html) -->
+  <body class="front-page ">
+
+    <!-- scrollToTop -->
+    <!-- ================ -->
+    <div class="scrollToTop circle"><i class="fa fa-angle-up"></i></div>
+
+    <!-- page wrapper start -->
+    <!-- ================ -->
+    <div class="page-wrapper">
+      <!-- header-container start -->
+      <div class="header-container">
+        <!-- header-top start -->
+        <!-- classes:  -->
+        <!-- "dark": dark version of header top e.g. class="header-top dark" -->
+        <!-- "colored": colored version of header top e.g. class="header-top colored" -->
+        <!-- ================ -->
+        <div class="header-top dark">
+          <div class="container">
+            <div class="row">
+              <div class="col-3 col-sm-6 col-lg-9">
+                <!-- header-top-first start -->
+                <!-- ================ -->
+                <div class="header-top-first clearfix">
+                  <ul class="social-links circle small clearfix hidden-sm-down">
+                    <li class="twitter"><a href="#"><i class="fa fa-twitter"></i></a></li>
+                    <li class="skype"><a href="#"><i class="fa fa-skype"></i></a></li>
+                    <li class="linkedin"><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                    <li class="googleplus"><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                    <li class="youtube"><a href="#"><i class="fa fa-youtube-play"></i></a></li>
+                    <li class="flickr"><a href="#"><i class="fa fa-flickr"></i></a></li>
+                    <li class="facebook"><a href="#"><i class="fa fa-facebook"></i></a></li>
+                    <li class="pinterest"><a href="#"><i class="fa fa-pinterest"></i></a></li>
+                  </ul>
+                  <div class="social-links hidden-md-up circle small">
+                    <div class="btn-group dropdown">
+                      <button id="header-top-drop-1" type="button" class="btn dropdown-toggle dropdown-toggle--no-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-share-alt"></i></button>
+                      <ul class="dropdown-menu dropdown-animation" aria-labelledby="header-top-drop-1">
+                        <li class="twitter"><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        <li class="skype"><a href="#"><i class="fa fa-skype"></i></a></li>
+                        <li class="linkedin"><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                        <li class="googleplus"><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                        <li class="youtube"><a href="#"><i class="fa fa-youtube-play"></i></a></li>
+                        <li class="flickr"><a href="#"><i class="fa fa-flickr"></i></a></li>
+                        <li class="facebook"><a href="#"><i class="fa fa-facebook"></i></a></li>
+                        <li class="pinterest"><a href="#"><i class="fa fa-pinterest"></i></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <ul class="list-inline hidden-md-down">
+                    <li class="list-inline-item"><i class="fa fa-map-marker pr-1 pl-2"></i>Address, City, Postal Code</li>
+                    <li class="list-inline-item"><i class="fa fa-phone pr-1 pl-2"></i>+00 123 123 123</li>
+                    <li class="list-inline-item"><i class="fa fa-envelope-o pr-1 pl-2"></i> example@your_domain.com</li>
+                  </ul>
+                </div>
+                <!-- header-top-first end -->
+              </div>
+              <div class="col-9 col-sm-6 col-lg-3">
+
+                <!-- header-top-second start -->
+                <!-- ================ -->
+                <div id="header-top-second"  class="clearfix">
+
+                  <!-- header top dropdowns start -->
+                  <!-- ================ -->
+                  <div class="header-top-dropdown text-right">
+                    {% if oidc.user_loggedin %}
+                    <ul class="list-inline hidden-md-down">
+                      <li class="list-inline-item"><a href="{{ url_for('profile', _external='True', _scheme='https') }}"><i class="fa fa-user pr-1 pl-2"></i> {{user_info.name}}</a></li>
+                    </ul>
+                    <div class="btn-group">
+                      <a href="{{ url_for('logout', _external='True', _scheme='https') }}" class="btn btn-default btn-sm">Logout</a>
+                    </div>
+                    {% else %}
+                    <div class="btn-group">
+                      <a href="{{ url_for('signup', _external='True', _scheme='https') }}" class="btn btn-default btn-sm"><i class="fa fa-user pr-2"></i> Sign Up</a>
+                    </div>
+                    <div class="btn-group">
+                      <a href="{{ url_for('login', _external='True', _scheme='https') }}" class="btn btn-default btn-sm"><i class="fa fa-lock pr-2"></i> Login</a>
+                    </div>
+                    {% endif %}
+                  </div>
+                  <!--  header top dropdowns end -->
+                </div>
+                <!-- header-top-second end -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- header-top end -->
+
+        <!-- header start -->
+        <!-- classes:  -->
+        <!-- "fixed": enables fixed navigation mode (sticky menu) e.g. class="header fixed clearfix" -->
+        <!-- "fixed-desktop": enables fixed navigation only for desktop devices e.g. class="header fixed fixed-desktop clearfix" -->
+        <!-- "fixed-all": enables fixed navigation only for all devices desktop and mobile e.g. class="header fixed fixed-desktop clearfix" -->
+        <!-- "dark": dark version of header e.g. class="header dark clearfix" -->
+        <!-- "centered": mandatory class for the centered logo layout -->
+        <!-- ================ -->
+        <header class="header fixed fixed-desktop clearfix">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-auto hidden-md-down pl-3">
+                <!-- header-first start -->
+                <!-- ================ -->
+                <div class="header-first clearfix">
+
+                  <!-- logo -->
+                  <div id="logo" class="logo">
+                    <a href="{{ url_for('home', _external='True', _scheme='https') }}"><img id="logo_img" src="images/logo_light_blue.png" alt="The Project"></a>
+                  </div>
+
+                  <!-- name-and-slogan -->
+                  <div class="site-slogan">
+                    Multipurpose HTML5 Template
+                  </div>
+
+                </div>
+                <!-- header-first end -->
+
+              </div>
+              <div class="col-lg-8 mr-lg-auto">
+
+                <!-- header-second start -->
+                <!-- ================ -->
+                <div class="header-second clearfix">
+
+                <!-- main-navigation start -->
+                <!-- classes: -->
+                <!-- "onclick": Makes the dropdowns open on click, this the default bootstrap behavior e.g. class="main-navigation onclick" -->
+                <!-- "animated": Enables animations on dropdowns opening e.g. class="main-navigation animated" -->
+                <!-- ================ -->
+                <div class="main-navigation main-navigation--mega-menu  animated">
+                  <nav class="navbar navbar-expand-lg navbar-light p-0">
+                    <div class="navbar-brand clearfix hidden-lg-up">
+
+                      <!-- logo -->
+                      <div id="logo-mobile" class="logo">
+                        <a href="index.html"><img id="logo-img-mobile" src="images/logo_light_blue.png" alt="The Project"></a>
+                      </div>
+
+                      <!-- name-and-slogan -->
+                      <div class="site-slogan">
+                        Multipurpose HTML5 Template
+                      </div>
+
+                    </div>
+
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse-1" aria-controls="navbar-collapse-1" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                      <!-- main-menu -->
+                      <ul class="navbar-nav mr-xl-auto">
+
+                        <!-- mega-menu start -->
+                        <li class="nav-item dropdown ">
+                          <a href="#" class="nav-link dropdown-toggle" id="third-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
+                          <ul class="dropdown-menu" aria-labelledby="third-dropdown">
+                            <li class="dropdown ">
+                              <li ><a href="{{ url_for('home', _external='True', _scheme='https') }}"><i class="fa fa-home pr-2"></i> Home</a></li>
+                              {% if oidc.user_loggedin %}
+                              <li ><a href="{{ url_for('profile', _external='True', _scheme='https') }}"><i class="fa fa-user pr-2"></i> My Profile</a></li>
+                              <li ><a href="{{ url_for('importusers', _external='True', _scheme='https') }}"><i class="fa fa-vcard pr-2"></i> Import Users</a></li>
+                              {% else %}
+                              <li ><a href="{{ url_for('login', _external='True', _scheme='https') }}"><i class="fa fa-lock pr-2"></i> Login</a></li>
+                              <li ><a href="{{ url_for('signup', _external='True', _scheme='https') }}"><i class="fa fa-user pr-2"></i> Sign Up</a></li>
+                              {% endif %}
+                            </li>
+                        </li>
+
+                      </ul>
+                      <!-- main-menu end -->
+                    </div>
+                  </nav>
+                </div>
+                <!-- main-navigation end -->
+                </div>
+                <!-- header-second end -->
+              </div>
+            </div>
+          </div>
+        </header>
+        <!-- header end -->
+      </div>
+      <!-- header-container end -->
+
+
+      {% block content %}{% endblock %}
+
+
+      <!-- footer start (Add "dark" class to #footer in order to enable dark footer) -->
+      <!-- ================ -->
+      <footer id="footer" class="clearfix dark">
+
+        <!-- .footer start -->
+        <!-- ================ -->
+        <div class="footer">
+          <div class="container">
+            <div class="footer-inner">
+              <div class="row">
+                <div class="col-lg-3">
+                  <div class="footer-content">
+                    <div class="logo-footer"><img id="logo-footer" src="images/logo_light_blue.png" alt=""></div>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus illo vel dolorum soluta consectetur doloribus sit. Delectus non tenetur odit dicta vitae debitis suscipit doloribus. Ipsa, aut voluptas quaerat... <a href="page-about.html">Learn More<i class="fa fa-long-arrow-right pl-1"></i></a></p>
+                    <div class="separator-2"></div>
+                    <nav>
+                      <ul class="nav flex-column">
+                        <li class="nav-item"><a class="nav-link" href="#">Support</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Lorem</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Terms</a></li>
+                        <li class="nav-item"><a class="nav-link" href="page-about.html">About</a></li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="footer-content">
+                    <h2 class="title">Latest From Blog</h2>
+                    <div class="separator-2"></div>
+                    <div class="media margin-clear">
+                      <div class="d-flex pr-2">
+                        <div class="overlay-container">
+                          <img class="media-object" src="images/blog-thumb-1.jpg" alt="blog-thumb">
+                          <a href="blog-post.html" class="overlay-link small"><i class="fa fa-link"></i></a>
+                        </div>
+                      </div>
+                      <div class="media-body">
+                        <h6 class="media-heading"><a href="blog-post.html">Lorem ipsum dolor sit amet...</a></h6>
+                        <p class="small margin-clear"><i class="fa fa-calendar pr-2"></i>Mar 23, 2017</p>
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="media margin-clear">
+                      <div class="d-flex pr-2">
+                        <div class="overlay-container">
+                          <img class="media-object" src="images/blog-thumb-2.jpg" alt="blog-thumb">
+                          <a href="blog-post.html" class="overlay-link small"><i class="fa fa-link"></i></a>
+                        </div>
+                      </div>
+                      <div class="media-body">
+                        <h6 class="media-heading"><a href="blog-post.html">Lorem ipsum dolor sit amet...</a></h6>
+                        <p class="small margin-clear"><i class="fa fa-calendar pr-2"></i>Mar 22, 2017</p>
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="media margin-clear">
+                      <div class="d-flex pr-2">
+                        <div class="overlay-container">
+                          <img class="media-object" src="images/blog-thumb-3.jpg" alt="blog-thumb">
+                          <a href="blog-post.html" class="overlay-link small"><i class="fa fa-link"></i></a>
+                        </div>
+                      </div>
+                      <div class="media-body">
+                        <h6 class="media-heading"><a href="blog-post.html">Lorem ipsum dolor sit amet...</a></h6>
+                        <p class="small margin-clear"><i class="fa fa-calendar pr-2"></i>Mar 21, 2017</p>
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="media margin-clear">
+                      <div class="d-flex pr-2">
+                        <div class="overlay-container">
+                          <img class="media-object" src="images/blog-thumb-4.jpg" alt="blog-thumb">
+                          <a href="blog-post.html" class="overlay-link small"><i class="fa fa-link"></i></a>
+                        </div>
+                      </div>
+                      <div class="media-body">
+                        <h6 class="media-heading"><a href="blog-post.html">Lorem ipsum dolor sit amet...</a></h6>
+                        <p class="small margin-clear"><i class="fa fa-calendar pr-2"></i>Mar 21, 2017</p>
+                      </div>
+                    </div>
+                    <div class="text-right space-top">
+                      <a href="blog-large-image-right-sidebar.html" class="link-dark"><i class="fa fa-plus-circle pl-1 pr-1"></i>More</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="footer-content">
+                    <h2 class="title">Portfolio Gallery</h2>
+                    <div class="separator-2"></div>
+                    <div class="row grid-space-10">
+                      <div class="col-4 col-lg-6">
+                        <div class="overlay-container mb-10">
+                          <img src="images/gallery-1.jpg" alt="">
+                          <a href="portfolio-item.html" class="overlay-link small">
+                            <i class="fa fa-link"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="col-4 col-lg-6">
+                        <div class="overlay-container mb-10">
+                          <img src="images/gallery-2.jpg" alt="">
+                          <a href="portfolio-item.html" class="overlay-link small">
+                            <i class="fa fa-link"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="col-4 col-lg-6">
+                        <div class="overlay-container mb-10">
+                          <img src="images/gallery-3.jpg" alt="">
+                          <a href="portfolio-item.html" class="overlay-link small">
+                            <i class="fa fa-link"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="col-4 col-lg-6">
+                        <div class="overlay-container mb-10">
+                          <img src="images/gallery-4.jpg" alt="">
+                          <a href="portfolio-item.html" class="overlay-link small">
+                            <i class="fa fa-link"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="col-4 col-lg-6">
+                        <div class="overlay-container mb-10">
+                          <img src="images/gallery-5.jpg" alt="">
+                          <a href="portfolio-item.html" class="overlay-link small">
+                            <i class="fa fa-link"></i>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="col-4 col-lg-6">
+                        <div class="overlay-container mb-10">
+                          <img src="images/gallery-6.jpg" alt="">
+                          <a href="portfolio-item.html" class="overlay-link small">
+                            <i class="fa fa-link"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="text-right space-top">
+                      <a href="portfolio-grid-2-3-col.html" class="link-dark"><i class="fa fa-plus-circle pl-1 pr-1"></i>More</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <div class="footer-content">
+                    <h2 class="title">Find Us</h2>
+                    <div class="separator-2"></div>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium odio voluptatem necessitatibus illo vel dolorum soluta.</p>
+                    <ul class="social-links circle animated-effect-1">
+                      <li class="facebook"><a href="#"><i class="fa fa-facebook"></i></a></li>
+                      <li class="twitter"><a href="#"><i class="fa fa-twitter"></i></a></li>
+                      <li class="googleplus"><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                      <li class="linkedin"><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                      <li class="xing"><a href="#"><i class="fa fa-xing"></i></a></li>
+                    </ul>
+                    <div class="separator-2"></div>
+                    <ul class="list-icons">
+                      <li><i class="fa fa-map-marker pr-2 text-default"></i> Street Address No, City</li>
+                      <li><i class="fa fa-phone pr-2 text-default"></i> +00 1234567890</li>
+                      <li><a href="#"><i class="fa fa-envelope-o pr-2"></i>example@your_domain.com</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- .footer end -->
+
+        <!-- .subfooter start -->
+        <!-- ================ -->
+        <div class="subfooter">
+          <div class="container">
+            <div class="subfooter-inner">
+              <div class="row">
+                <div class="col-md-12">
+                  <p class="text-center">Copyright © 2019. All rights reserved.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- .subfooter end -->
+
+      </footer>
+      <!-- footer end -->
     </div>
-</nav>
+    <!-- page-wrapper end -->
 
-<div id="content" class="container">
-    {% block content %}{% endblock %}
-</div>
-</body>
+    <!-- JavaScript files placed at the end of the document so the pages load faster -->
+    <!-- ================================================== -->
+    <!-- Jquery and Bootstap core js files -->
+    <script src="plugins/jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Magnific Popup javascript -->
+    <script src="plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+    <!-- jQuery Revolution Slider  -->
+    <script src="plugins/rs-plugin-5/js/jquery.themepunch.tools.min.js"></script>
+    <script src="plugins/rs-plugin-5/js/jquery.themepunch.revolution.min.js"></script>
+    <!-- Isotope javascript -->
+    <script src="plugins/isotope/imagesloaded.pkgd.min.js"></script>
+    <script src="plugins/isotope/isotope.pkgd.min.js"></script>
+    <!-- Magnific Popup javascript -->
+    <script src="plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+    <!-- Appear javascript -->
+    <script src="plugins/waypoints/jquery.waypoints.min.js"></script>
+    <script src="plugins/waypoints/sticky.min.js"></script>
+    <!-- Count To javascript -->
+    <script src="plugins/countTo/jquery.countTo.js"></script>
+    <!-- Morphext -->
+    <script src="plugins/typed/typed.min.js"></script>
+    <!-- Slick carousel javascript -->
+    <script src="plugins/slick/slick.min.js"></script>
+    <!-- Initialization of Plugins -->
+    <script src="js/template.js"></script>
+    <!-- Custom Scripts -->
+    <script src="js/custom.js"></script>
+
+  </body>
 </html>

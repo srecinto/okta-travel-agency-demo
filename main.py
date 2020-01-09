@@ -36,6 +36,7 @@ with open('client_secrets.json', 'w') as outfile:
 
     app_config = {
         'SECRET_KEY': default_settings["app_secret_key"],
+        'PREFERRED_URL_SCHEME': 'https',
         'OIDC_CLIENT_SECRETS': 'client_secrets.json',
         'OIDC_DEBUG': True,
         'OIDC_COOKIE_SECURE': True,
@@ -62,7 +63,9 @@ def serve_static_html(filename):
 
 @app.route("/")
 def home():
-    return render_template("home.html", oidc=oidc)
+    user_info = get_user_info()
+
+    return render_template("home.html", oidc=oidc, user_info=user_info)
 
 
 @app.route("/login")
@@ -75,13 +78,19 @@ def login():
     return render_template("login.html", config=default_settings, oidc=oidc, state=base64.b64encode(bytes(json.dumps(state),'utf-8')).decode('utf-8'))
 
 
+@app.route("/signup")
+def signup():
+
+    return render_template("signup.html", config=default_settings, oidc=oidc)
+
+
 @app.route("/profile")
 def profile():
-    info = oidc.user_getinfo(["sub", "name", "email", "locale"])
+    user_info = get_user_info()
     # access_token = oidc.get_access_token()
     # print("access_token: {0}".format(access_token))
     okta_admin = OktaAdmin(default_settings)
-    user = okta_admin.get_user(info["sub"])
+    user = okta_admin.get_user(user_info["sub"])
     print("user: {0}".format(user))
     # user_profile = user["profile"]
     # app_user = okta_admin.get_user_application_by_current_client_id(user["id"])
@@ -95,12 +104,12 @@ def profile():
         app_dict= dict(appname=app_name,appurl=app_url,applogo=app_logo)
         app_list.append(app_dict)
 
-    print(info)
+    print(user_info)
     print(app_list)
-    return render_template("profile.html", profile=info, oidc=oidc, applist=app_list)
+    return render_template("profile.html", oidc=oidc, applist=app_list, user_info=user_info)
 
 
-@app.route("/logout", methods=["POST"])
+@app.route("/logout")
 def logout():
     oidc.logout()
 
@@ -109,15 +118,15 @@ def logout():
 
 @app.route("/import")
 def importusers():
-    info = oidc.user_getinfo(["sub", "name", "email", "locale"])
+    user_info = get_user_info()
 
-    return render_template("import.html", profile=info, oidc=oidc)
+    return render_template("import.html", user_info=user_info, oidc=oidc)
 
 
 @app.route('/upload',methods = ['POST'])
 def upload_route_summary():
     if request.method == 'POST':
-        info = oidc.user_getinfo(["sub", "name", "email", "locale"])
+        user_info = get_user_info()
 
         # Create variable for uploaded file
         f = request.files['fileupload']
@@ -128,22 +137,31 @@ def upload_route_summary():
         #create list of dictionaries keyed by header row
         csv_dicts = [{k: v for k, v in row.items()} for row in csv.DictReader(fstring.splitlines(), skipinitialspace=True)]
 
-        for user_info in csv_dicts:
+        for user_record in csv_dicts:
             okta_admin = OktaAdmin(default_settings)
-            info = oidc.user_getinfo(["sub", "name", "email", "locale"])
             user_data = {
                 "profile": {
-                    "firstName": user_info['firstName'].replace("'", ""),
-                    "lastName": user_info['lastName'].replace("'", ""),
-                    "email": user_info['email'].replace("'", ""),
-                    "login": user_info['email'].replace("'", ""),
-                    "mobilePhone": user_info['mobilePhone'].replace("'", "")
+                    "firstName": user_record['firstName'].replace("'", ""),
+                    "lastName": user_record['lastName'].replace("'", ""),
+                    "email": user_record['email'].replace("'", ""),
+                    "login": user_record['email'].replace("'", ""),
+                    "mobilePhone": user_record['mobilePhone'].replace("'", "")
                 }
             }
             app_info = okta_admin.create_user(user_data,True)
             print(app_info)
 
-    return render_template("upload.html", profile=info, oidc=oidc)
+    return render_template("upload.html", user_info=user_info, oidc=oidc)
+
+
+def get_user_info():
+    user_info = None
+    try:
+        user_info = oidc.user_getinfo(["sub", "name", "email", "locale"])
+    except:
+        print("User is not authenticated")
+
+    return user_info
 
 
 if __name__ == '__main__':
