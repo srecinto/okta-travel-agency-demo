@@ -1,57 +1,88 @@
 {% extends "template.html" %}
 
 {% block content %}
-<div>
-    <h2>My Profile</h2>
-    <p>Hello, <span>{{ profile.email }}</span>. Below is the information that was read with your <a
-            href="https://developer.okta.com/docs/api/resources/oidc.html#get-user-information"
-            target="_blank">Access Token</a>.
-    </p>
+      <!-- breadcrumb start -->
+      <!-- ================ -->
+      <div class="breadcrumb-container">
+        <div class="container">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><i class="fa fa-home pr-2"></i><a class="link-dark" href="{{ url_for('home', _external='True', _scheme='https') }}">Home</a></li>
+            <li class="breadcrumb-item active">My Profile</li>
+          </ol>
+        </div>
+      </div>
+      <!-- breadcrumb end -->
 
-</div>
+      <!-- main-container start -->
+      <!-- ================ -->
+      <section class="main-container">
 
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Claim</th>
-        <th>Value</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for key, claim in profile.items() %}
-    <tr>
-        <td>{{ key }}</td>
-        <td id="claim-{{ key }}">
-            {{ claim }}
-        </td>
-    </tr>
-    {% endfor %}
-    </tbody>
+        <div class="container">
+          <div class="row">
 
+            <!-- main start -->
+            <!-- ================ -->
+            <div class="main col-12">
 
-</table>
-
-
-
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Value</th>
-    </tr>
-    </thead>
-    <tbody>
-
-    {% for i in applist %}
-         <tr>
-            <td>{{ i.appname }}</td>
-            <td id="id{{ loop.index }}">
-                <a href="{{ i.appurl }}"><img src="{{ i.applogo }}"></a>
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
+              <!-- page-title start -->
+              <!-- ================ -->
+              <h1 class="page-title">My Profile</h1>
+              <div class="separator-2"></div>
+              <!-- page-title end -->
+              <p>Hello, <span>{{ user_info.email }}</span>. Below is the information that was read with your <a
+                        href="https://developer.okta.com/docs/api/resources/oidc.html#get-user-information"
+                        target="_blank">Access Token</a>.
+              </p>
+              <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Claim</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, claim in user_info.items() %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td id="claim-{{ key }}">
+                            {{ claim }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
 
 
-</table>
+                </table>
+
+
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for i in applist %}
+                         <tr>
+                            <td>{{ i.appname }}</td>
+                            <td id="id{{ loop.index }}">
+                                <a href="{{ i.appurl }}"><img src="{{ i.applogo }}"></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+
+                </table>
+            </div>
+            <!-- main end -->
+
+          </div>
+        </div>
+      </section>
+      <!-- main-container end -->
+
 {% endblock content %}

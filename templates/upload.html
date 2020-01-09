@@ -1,13 +1,43 @@
 {% extends "template.html" %}
 
 {% block content %}
-<div>
-    <h2>Import User</h2>
-    <p>Hello, <span>{{ profile.email }}</span>.
-    </p>
+     <!-- breadcrumb start -->
+      <!-- ================ -->
+      <div class="breadcrumb-container">
+        <div class="container">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><i class="fa fa-home pr-2"></i><a class="link-dark" href="{{ url_for('home', _external='True', _scheme='https') }}">Home</a></li>
+            <li class="breadcrumb-item active">Import User</li>
+          </ol>
+        </div>
+      </div>
+      <!-- breadcrumb end -->
 
-</div>
+      <!-- main-container start -->
+      <!-- ================ -->
+      <section class="main-container">
 
-Upload Complete
+        <div class="container">
+          <div class="row">
+
+            <!-- main start -->
+            <!-- ================ -->
+            <div class="main col-12">
+
+              <!-- page-title start -->
+              <!-- ================ -->
+              <h1 class="page-title">Import User</h1>
+              <div class="separator-2"></div>
+              <!-- page-title end -->
+              <p>Hello, <span>{{ user_info.email }}</span>.</p>
+
+              <p>Upload Complete!</p>
+
+            <!-- main end -->
+
+          </div>
+        </div>
+      </section>
+      <!-- main-container end -->
 
 {% endblock content %}
