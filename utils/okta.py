@@ -353,6 +353,7 @@ class OktaAdmin:
         return RestUtil.execute_get(url, okta_headers)
 
 
+
     def create_user(self, user, activate_user=False):
         print("OktaAdmin.create_user(user)")
         okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
@@ -382,6 +383,37 @@ class OktaAdmin:
         body = {}
 
         return RestUtil.execute_post(url, body, okta_headers)
+        
+    def suspend_user(self, user_id):
+        print("OktaAdmin.suspend_user(user_id)")
+        okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
+        url = "{base_url}/api/v1/users/{user_id}/lifecycle/suspend".format(
+            base_url=self.okta_config["okta_org_name"],
+            user_id=user_id)
+        print(user_id)
+        body = {}
+        
+        return RestUtil.execute_post(url, body, okta_headers)
+        
+    def unsuspend_user(self, user_id):
+        print("OktaAdmin.unsuspend_user(user_id)")
+        okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
+        url = "{base_url}/api/v1/users/{user_id}/lifecycle/unsuspend".format(
+            base_url=self.okta_config["okta_org_name"],
+            user_id=user_id)
+        body = {}
+
+        return RestUtil.execute_post(url, body, okta_headers)
+        
+    def reset_password_for_user(self, user_id):
+        print("OktaAdmin.unsuspend_user(user_id)")
+        okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
+        url = "{base_url}/api/v1/users/{user_id}/lifecycle/reset_password".format(
+            base_url=self.okta_config["okta_org_name"],
+            user_id=user_id)
+        body = {}
+
+        return RestUtil.execute_post(url, body, okta_headers)
 
     def get_groups_by_name(self, name):
         print("OktaAdmin.get_groups_by_name(user_id)")
@@ -389,6 +421,15 @@ class OktaAdmin:
         url = "{base_url}/api/v1/groups?q={name}".format(
             base_url=self.okta_config["okta_org_name"],
             name=name)
+
+        return RestUtil.execute_get(url, okta_headers)
+        
+    def get_user_list_by_group_id(self, id):
+        print("OktaAdmin.get_user_list_by_group_id(user_id)")
+        okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
+        url = "{base_url}/api/v1/groups/{id}/users".format(
+            base_url=self.okta_config["okta_org_name"],
+            id=id)
 
         return RestUtil.execute_get(url, okta_headers)
 
