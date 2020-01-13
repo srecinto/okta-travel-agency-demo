@@ -87,25 +87,12 @@ def signup():
 @app.route("/profile")
 def profile():
     user_info = get_user_info()
-    # access_token = oidc.get_access_token()
-    # print("access_token: {0}".format(access_token))
     okta_admin = OktaAdmin(default_settings)
     user = okta_admin.get_user(user_info["sub"])
-    print("user: {0}".format(user))
-    # user_profile = user["profile"]
-    # app_user = okta_admin.get_user_application_by_current_client_id(user["id"])
+    print(user)
     app_info = okta_admin.get_applications_by_user_id(user["id"])
-    app_list = []
-    for app_data in app_info:
-        parsed_input = json.loads(json.dumps(app_data))
-        app_name = parsed_input["label"]
-        app_url = parsed_input["_links"]["appLinks"][0]["href"]
-        app_logo = parsed_input["_links"]["logo"][0]["href"]
-        app_dict= dict(appname=app_name,appurl=app_url,applogo=app_logo)
-        app_list.append(app_dict)
 
-
-    return render_template("profile.html", oidc=oidc, applist=app_list, user_info=user_info)
+    return render_template("profile.html", oidc=oidc, applist=app_info, user_info=user_info)
 
 
 @app.route("/logout")
@@ -126,6 +113,16 @@ def importusers():
 def upload_route_summary():
     if request.method == 'POST':
         user_info = get_user_info()
+        okta_admin = OktaAdmin(default_settings)
+        
+        # List Group and find a Travel Agency
+        user = okta_admin.get_user(user_info["sub"])
+        group_info = okta_admin.get_user_groups(user["id"])
+        for group_data in group_info:
+            print(group_data)
+            if "TravelAgency_" in group_data["profile"]["name"]:
+                group_name = group_data["profile"]["name"]
+                break
 
         # Create variable for uploaded file
         f = request.files['fileupload']
@@ -138,22 +135,21 @@ def upload_route_summary():
         return_list = []
         return_users = []
         for user_record in csv_dicts:
-            okta_admin = OktaAdmin(default_settings)
             user_data = {
                 "profile": {
                     "firstName": user_record['firstName'].replace("'", ""),
                     "lastName": user_record['lastName'].replace("'", ""),
                     "email": user_record['email'].replace("'", ""),
                     "login": user_record['email'].replace("'", ""),
-                    "mobilePhone": user_record['mobilePhone'].replace("'", "")
+                    "mobilePhone": user_record['mobilePhone'].replace("'", ""),
+                    "travelAgencyGroup": group_name
                 }
             }
+            return_users.append(user_data)
             import_users = okta_admin.create_user(user_data,True)
             return_list.append(import_users)
-            return_users.append(user_data)
-        print (return_list)
-        print (user_data)
-    return render_template("upload.html", user_info=user_info, oidc=oidc,returnlist=return_list, userlist=user_data)
+            
+    return render_template("upload.html", user_info=user_info, oidc=oidc,returnlist=return_list, userlist=return_users)
 
 
 
@@ -161,14 +157,17 @@ def upload_route_summary():
 def users():
     user_info = get_user_info()
     okta_admin = OktaAdmin(default_settings)
-    user = okta_admin.get_user(user_info["sub"])
-    group_info = okta_admin.get_groups_by_name("everyone")
-    for group_data in group_info:
-        parsed_input = json.loads(json.dumps(group_data))
-        group_id = parsed_input["id"]
     
-    group_user_list = okta_admin.get_user_list_by_group_id(group_id)
+    # List Group and find a Travel Agency
+    user = okta_admin.get_user(user_info["sub"])
+    group_info = okta_admin.get_user_groups(user["id"])
+    for group_data in group_info:
+        print(group_data)
+        if "TravelAgency_" in group_data["profile"]["name"]:
+            group_id = group_data["id"]
+            break
 
+    group_user_list = okta_admin.get_user_list_by_group_id(group_id)
     return render_template("users.html", user_info=user_info, oidc=oidc, groupinfo=group_info,userlist= group_user_list)
 
 
@@ -271,13 +270,23 @@ def createuserinfo():
     email = request.form.get('email')
     mobile_phone = request.form.get('phonenumber')
 
+    # List Group and find a Travel Agency
+    user = okta_admin.get_user(user_info["sub"])
+    group_info = okta_admin.get_user_groups(user["id"])
+    for group_data in group_info:
+        print(group_data)
+        if "TravelAgency_" in group_data["profile"]["name"]:
+            group_name = group_data["profile"]["name"]
+            break
+        
     user_data = {
                 "profile": {
                     "firstName": first_name,
                     "lastName": last_name,
                     "email": email,
                     "login": email,
-                    "mobilePhone": mobile_phone
+                    "mobilePhone": mobile_phone,
+                    "travelAgencyGroup": group_name
                 }
             }
     user_create_response = okta_admin.create_user(user_data)

@@ -29,9 +29,7 @@
               <h1 class="page-title">My Profile</h1>
               <div class="separator-2"></div>
               <!-- page-title end -->
-              <p>Hello, <span>{{ user_info.email }}</span>. Below is the information that was read with your <a
-                        href="https://developer.okta.com/docs/api/resources/oidc.html#get-user-information"
-                        target="_blank">Access Token</a>.
+              <p>Hello, <span>{{ user_info.email }}</span>.
               </p>
               <table class="table table-striped">
                     <thead>
@@ -55,7 +53,9 @@
                 </table>
 
 
-
+              <h1 class="page-title">My Apps</h1>
+              <div class="separator-2"></div>
+             
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -64,14 +64,17 @@
                     </tr>
                     </thead>
                     <tbody>
-
+                    
                     {% for i in applist %}
+                      {% set isHidden = i['visibility']['hide']['web'] %}
+                      {% if 'False' == isHidden|string %}
                          <tr>
-                            <td>{{ i.appname }}</td>
+                            <td>{{ i['label'] }}</td>
                             <td id="id{{ loop.index }}">
-                                <a href="{{ i.appurl }}"><img src="{{ i.applogo }}"></a>
+                                <a href="{{ i["_links"]["appLinks"][0]["href"] }}"><img src="{{ i["_links"]["logo"][0]["href"]}}"></a>
                             </td>
                         </tr>
+                      {% endif %}
                     {% endfor %}
                     </tbody>
 
