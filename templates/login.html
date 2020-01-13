@@ -41,12 +41,8 @@
     <link href="css/skins/light_blue.css" rel="stylesheet">
 
     <!-- Custom css -->
-    <script src="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.13.0/js/okta-sign-in.min.js"
-            type="text/javascript"></script>
-    <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.13.0/css/okta-sign-in.min.css"
-          type="text/css" rel="stylesheet"/>
-    <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.13.0/css/okta-theme.css"
-          type="text/css" rel="stylesheet"/>
+    <script src="https://global.oktacdn.com/okta-signin-widget/3.2.0/js/okta-sign-in.min.js" type="text/javascript"></script>
+    <link href="https://global.oktacdn.com/okta-signin-widget/3.2.0/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
 
     <link href="css/custom.css" rel="stylesheet">
 
@@ -82,7 +78,6 @@
                   <h3 class="margin-clear"><a href="index.html" class="logo-font link-light">The <span class="text-default">Project</span></a></h3>
                 </div>
                 <!-- name-and-slogan -->
-                <p class="small text-center">Multipurpose HTML5 Template</p>
                 <div class="form-block center-block p-30 light-gray-bg border-clear">
                   <h2 class="title">Login</h2>
                   <div id="sign-in-widget"></div>
@@ -91,7 +86,7 @@
                       baseUrl: "{{config.okta_org_name}}",
                       clientId: "{{config.client_id}}",
                       redirectUri: "{{config.redirect_uri}}",
-                      logo: 'https://logo.clearbit.com/fundera.com',
+                      logo: 'https://logo.clearbit.com/aa.com',
                       authParams: {
                         issuer: "{{config.issuer}}",
                         responseType: 'code',

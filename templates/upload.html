@@ -38,9 +38,20 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {{ userlist }}
-                    {{ returnlist }}
-                  
+                    {% for i in returnlist %}
+                         <tr>
+                           <td>{{ userlist[loop.index-1]['profile']['firstName'] }} {{ userlist[loop.index-1]['profile']['lastName'] }}</td>
+                           <td>{{ userlist[loop.index-1]['profile']['email'] }}</td>
+                          {% if "errorSummary" in i %}
+                           <td>{{ i['errorCauses'][0]['errorSummary'] }}</td>
+                          {% endif %}
+                            
+                          {% if "id" in i %}
+                           <td>User Provisioned</td>
+                          {% endif %}
+                           
+                        </tr>
+                    {% endfor %}
                     </tbody>
 
 

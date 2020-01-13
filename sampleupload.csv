@@ -1,0 +1,3 @@
+ firstName, lastName, email, login, mobilePhone
+ 'Joe','Smith', 'jsmith@gmail.com','jsmith@gmail.com','512-555-1212'
+ 'Chris','Sparks', 'csparks@gmail.com','csparks@gmail.com','512-555-1313'
