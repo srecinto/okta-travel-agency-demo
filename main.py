@@ -104,8 +104,7 @@ def profile():
         app_dict= dict(appname=app_name,appurl=app_url,applogo=app_logo)
         app_list.append(app_dict)
 
-    print(user_info)
-    print(app_list)
+
     return render_template("profile.html", oidc=oidc, applist=app_list, user_info=user_info)
 
 
@@ -136,7 +135,8 @@ def upload_route_summary():
 
         #create list of dictionaries keyed by header row
         csv_dicts = [{k: v for k, v in row.items()} for row in csv.DictReader(fstring.splitlines(), skipinitialspace=True)]
-
+        return_list = []
+        return_users = []
         for user_record in csv_dicts:
             okta_admin = OktaAdmin(default_settings)
             user_data = {
@@ -148,10 +148,146 @@ def upload_route_summary():
                     "mobilePhone": user_record['mobilePhone'].replace("'", "")
                 }
             }
-            app_info = okta_admin.create_user(user_data,True)
-            print(app_info)
+            import_users = okta_admin.create_user(user_data,True)
+            return_list.append(import_users)
+            return_users.append(user_data)
+        print (return_list)
+        print (user_data)
+    return render_template("upload.html", user_info=user_info, oidc=oidc,returnlist=return_list, userlist=user_data)
 
-    return render_template("upload.html", user_info=user_info, oidc=oidc)
+
+
+@app.route("/users")
+def users():
+    user_info = get_user_info()
+    okta_admin = OktaAdmin(default_settings)
+    user = okta_admin.get_user(user_info["sub"])
+    group_info = okta_admin.get_groups_by_name("everyone")
+    for group_data in group_info:
+        parsed_input = json.loads(json.dumps(group_data))
+        group_id = parsed_input["id"]
+    
+    group_user_list = okta_admin.get_user_list_by_group_id(group_id)
+
+    return render_template("users.html", user_info=user_info, oidc=oidc, groupinfo=group_info,userlist= group_user_list)
+
+
+@app.route("/suspenduser")
+def suspenduser():
+    user_info = get_user_info()
+    okta_admin = OktaAdmin(default_settings)
+    user_id = request.args.get('user_id')
+    suspend_user = okta_admin.suspend_user(user_id)
+    user_info2 = okta_admin.get_user(user_id)
+
+    if not suspend_user:
+        message = "User " + user_info2['profile']['firstName'] + " "+  user_info2['profile']['lastName'] +  " Suspended"
+    else:
+        message = "Error During Suspension"    
+    
+    return redirect(url_for("users", _external="True", _scheme="https",message=message))
+
+@app.route("/unsuspenduser")
+def unsuspenduser():
+    user_info = get_user_info()
+    okta_admin = OktaAdmin(default_settings)
+    user_id = request.args.get('user_id')
+    unsuspend_user = okta_admin.unsuspend_user(user_id)
+    user_info2 = okta_admin.get_user(user_id)
+
+    if not unsuspend_user:
+        message = "User " + user_info2['profile']['firstName'] + " "+  user_info2['profile']['lastName'] +  " Un-Suspended"
+    else:
+        message = "Error During Un-Suspension"    
+    
+    return redirect(url_for("users", _external="True", _scheme="https",message=message))
+
+@app.route("/resetpassword")
+def resetpassword():
+    user_info = get_user_info()
+    okta_admin = OktaAdmin(default_settings)
+    user_id = request.args.get('user_id')
+    reset_password = okta_admin.reset_password_for_user(user_id)
+    user_info2 = okta_admin.get_user(user_id)
+
+    if not reset_password:
+        message = "Password Reset for User " + user_info2['profile']['firstName'] + " "+  user_info2['profile']['lastName'] 
+    else:
+        message = "Error During Password Reset"    
+        
+    return redirect(url_for("users", _external="True", _scheme="https",message=message))
+
+@app.route("/userupdate")
+def userupdate():
+    user_info = get_user_info()
+    okta_admin = OktaAdmin(default_settings)
+    user_id = request.args.get('user_id')
+    user_info2 = okta_admin.get_user(user_id)
+
+    return render_template("userupdate.html", user_info=user_info, oidc=oidc, user_info2=user_info2)
+    
+    
+@app.route("/updateuserinfo", methods=["POST"])
+def updateuserinfo():
+    user_info = get_user_info()
+    okta_admin = OktaAdmin(default_settings)
+    user_id = request.form.get('user_id')
+    first_name = request.form.get('firstname')
+    last_name = request.form.get('lastname')
+    email = request.form.get('email')
+    mobile_phone = request.form.get('phonenumber')
+
+    user_data = {
+                "profile": {
+                    "firstName": first_name,
+                    "lastName": last_name,
+                    "email": email,
+                    "mobilePhone": mobile_phone
+                }
+            }
+    user_update_response = okta_admin.update_user(user_id,user_data)
+
+    if user_update_response:
+        message = "User " + first_name + " "+  last_name+ " was Updated"
+    else:
+        message = "Error During Update"    
+        
+    
+    return redirect(url_for("userupdate", _external="True", _scheme="https",user_id=user_id,message=message))
+    
+
+@app.route("/usercreate")
+def usercreate():
+    user_info = get_user_info()
+
+    return render_template("usercreate.html", user_info=user_info, oidc=oidc)
+    
+@app.route("/createuserinfo", methods=["POST"])
+def createuserinfo():
+    user_info = get_user_info()
+    okta_admin = OktaAdmin(default_settings)
+    first_name = request.form.get('firstname')
+    last_name = request.form.get('lastname')
+    email = request.form.get('email')
+    mobile_phone = request.form.get('phonenumber')
+
+    user_data = {
+                "profile": {
+                    "firstName": first_name,
+                    "lastName": last_name,
+                    "email": email,
+                    "login": email,
+                    "mobilePhone": mobile_phone
+                }
+            }
+    user_create_response = okta_admin.create_user(user_data)
+    if user_create_response:
+        message = "User " + first_name + " "+  last_name+ " was Created"
+    else:
+        message = "Error During Create"    
+        
+    
+    return redirect(url_for("users", _external="True", _scheme="https",message=message))
 
 
 def get_user_info():
