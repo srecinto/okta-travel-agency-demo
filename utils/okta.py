@@ -416,7 +416,7 @@ class OktaAdmin:
         return RestUtil.execute_post(url, body, okta_headers)
 
     def get_groups_by_name(self, name):
-        print("OktaAdmin.get_groups_by_name(user_id)")
+        print("OktaAdmin.get_groups_by_name(name)")
         okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
         url = "{base_url}/api/v1/groups?q={name}".format(
             base_url=self.okta_config["okta_org_name"],
@@ -709,3 +709,41 @@ class OktaUtil:
         encoded_auth = base64.b64encode(bytes(auth_raw, 'UTF-8')).decode("UTF-8")
 
         return encoded_auth
+
+
+class TokenUtil:
+      
+    @staticmethod
+    def get_single_claim_from_token(token,claim_name):
+        print("get_single_claim_from_token")
+        claims = TokenUtil.get_claims_from_token(token)
+        try:
+            print("claim found")
+            found_claim = claims[claim_name]
+        except:
+            print("claim not found")
+            found_claim = ""
+        return found_claim
+        
+    @staticmethod
+    def get_claims_from_token(token):
+        print("get_claims_from_token(token)")
+        claims = None
+    
+        if token:
+            jwt = token.encode("utf-8")
+    
+            token_payload = jwt.decode().split(".")[1]
+    
+            claims_string = TokenUtil.decode_base64(token_payload)
+    
+            claims = json.loads(claims_string)
+    
+        return claims
+    
+    @staticmethod
+    def decode_base64(data):
+        missing_padding = len(data) % 4
+        if missing_padding > 0:
+            data += "=" * (4 - missing_padding)
+        return base64.urlsafe_b64decode(data)

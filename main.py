@@ -4,11 +4,13 @@ import json
 import csv
 
 from config import default_settings
-
+from functools import wraps
 from flask import Flask, render_template, url_for, redirect, session, jsonify, request
-from flask import send_from_directory
+from flask import send_from_directory, make_response
 from flask_oidc import OpenIDConnect
-from utils.okta import OktaAuth, OktaAdmin
+
+from utils.okta import OktaAuth, OktaAdmin, TokenUtil
+
 
 app = Flask(__name__)
 
@@ -29,9 +31,6 @@ with open('client_secrets.json', 'w') as outfile:
         }
     }
 
-    # print("oidc_config: {0}".format(json.dumps(oidc_config, indent=4, sort_keys=True)))
-    # print("default_settings: {0}".format(default_settings))
-
     json.dump(oidc_config, outfile, indent=4, sort_keys=True)
 
     app_config = {
@@ -40,7 +39,7 @@ with open('client_secrets.json', 'w') as outfile:
         'OIDC_CLIENT_SECRETS': 'client_secrets.json',
         'OIDC_DEBUG': True,
         'OIDC_COOKIE_SECURE': True,
-        'OIDC_USER_INFO_ENABLED': True,
+        'OIDC_USER_INFO_ENABLED': False,
         'OIDC_INTROSPECTION_AUTH_METHOD': 'bearer',
         'OIDC_SCOPES': ["openid", "profile", "email", "offline_access"],
         'OVERWRITE_REDIRECT_URI': default_settings["redirect_uri"],
@@ -52,6 +51,57 @@ with open('client_secrets.json', 'w') as outfile:
 app.config.update(app_config)
 
 oidc = OpenIDConnect(app)
+
+    
+def is_authenticated(f):
+    @wraps(f)
+    def decorated_function(*args, **kws):
+        print("authenticated()")
+        token = oidc.get_access_token()
+        
+        if is_token_valid_remote(token):
+            return f(*args, **kws)
+        else:
+            print("Access Denied")
+            return make_response(redirect(url_for("home", _external="True", _scheme="https")))
+
+    return decorated_function
+
+def is_token_valid_remote(token):
+    print("is_token_valid_remote(token)")
+    result = False
+    okta_auth = OktaAuth(default_settings)
+    
+    instrospect_response = okta_auth.introspect(token=token)
+    print("instrospect_response: {0}".format(instrospect_response))
+    
+    if "active" in instrospect_response:
+        result = instrospect_response["active"]
+    
+    return result
+    
+def requires_admin(f):
+    @wraps(f)
+    def decorated_function(*args, **kws):
+        print("requires_admin()")
+        token = oidc.get_access_token()
+        
+        if is_admin(token):
+            return f(*args, **kws)
+        else:
+            print("Admin Access Denied")
+            return make_response(redirect(url_for("profile", _external="True", _scheme="https")))
+
+    return decorated_function  
+
+def is_admin(token):
+    print("is_admin(token)")
+    result = False
+    okta_auth = OktaAuth(default_settings)
+    check_admin = TokenUtil.get_single_claim_from_token(token,"taa")
+    result = check_admin
+    
+    return result
 
 @app.route('/<path:filename>')
 def serve_static_html(filename):
@@ -80,19 +130,20 @@ def login():
 
 @app.route("/signup")
 def signup():
-
+    
     return render_template("signup.html", config=default_settings, oidc=oidc)
 
 
 @app.route("/profile")
+@is_authenticated
 def profile():
-    user_info = get_user_info()
-    okta_admin = OktaAdmin(default_settings)
-    user = okta_admin.get_user(user_info["sub"])
-    print(user)
-    app_info = okta_admin.get_applications_by_user_id(user["id"])
+        user_info = get_user_info()
+        okta_admin = OktaAdmin(default_settings)
+        user = okta_admin.get_user(user_info["sub"])
+        
+        app_info = okta_admin.get_applications_by_user_id(user["id"])
 
-    return render_template("profile.html", oidc=oidc, applist=app_info, user_info=user_info)
+        return render_template("profile.html", oidc=oidc, applist=app_info, user_info=user_info)
 
 
 @app.route("/logout")
@@ -103,6 +154,8 @@ def logout():
 
 
 @app.route("/import")
+@is_authenticated
+@requires_admin
 def importusers():
     user_info = get_user_info()
 
@@ -110,20 +163,18 @@ def importusers():
 
 
 @app.route('/upload',methods = ['POST'])
+@is_authenticated
+@requires_admin
 def upload_route_summary():
     if request.method == 'POST':
         user_info = get_user_info()
         okta_admin = OktaAdmin(default_settings)
         
-        # List Group and find a Travel Agency
-        user = okta_admin.get_user(user_info["sub"])
-        group_info = okta_admin.get_user_groups(user["id"])
-        for group_data in group_info:
-            print(group_data)
-            if "TravelAgency_" in group_data["profile"]["name"]:
-                group_name = group_data["profile"]["name"]
-                break
-
+       
+        # Group Name from Claims
+        token = oidc.get_access_token()
+        group_name = TokenUtil.get_single_claim_from_token(token,"tagrp")
+        
         # Create variable for uploaded file
         f = request.files['fileupload']
 
@@ -154,24 +205,24 @@ def upload_route_summary():
 
 
 @app.route("/users")
+@is_authenticated
+@requires_admin
 def users():
     user_info = get_user_info()
     okta_admin = OktaAdmin(default_settings)
     
-    # List Group and find a Travel Agency
-    user = okta_admin.get_user(user_info["sub"])
-    group_info = okta_admin.get_user_groups(user["id"])
-    for group_data in group_info:
-        print(group_data)
-        if "TravelAgency_" in group_data["profile"]["name"]:
-            group_id = group_data["id"]
-            break
-
+    token = oidc.get_access_token()
+    group_name = TokenUtil.get_single_claim_from_token(token,"tagrp")
+    group_data = okta_admin.get_groups_by_name(group_name)
+    group_id = group_data[0]["id"]
+    
     group_user_list = okta_admin.get_user_list_by_group_id(group_id)
-    return render_template("users.html", user_info=user_info, oidc=oidc, groupinfo=group_info,userlist= group_user_list)
+    return render_template("users.html", user_info=user_info, oidc=oidc, userlist= group_user_list)
 
 
 @app.route("/suspenduser")
+@is_authenticated
+@requires_admin
 def suspenduser():
     user_info = get_user_info()
     okta_admin = OktaAdmin(default_settings)
@@ -187,6 +238,8 @@ def suspenduser():
     return redirect(url_for("users", _external="True", _scheme="https",message=message))
 
 @app.route("/unsuspenduser")
+@is_authenticated
+@requires_admin
 def unsuspenduser():
     user_info = get_user_info()
     okta_admin = OktaAdmin(default_settings)
@@ -202,6 +255,8 @@ def unsuspenduser():
     return redirect(url_for("users", _external="True", _scheme="https",message=message))
 
 @app.route("/resetpassword")
+@is_authenticated
+@requires_admin
 def resetpassword():
     user_info = get_user_info()
     okta_admin = OktaAdmin(default_settings)
@@ -217,6 +272,8 @@ def resetpassword():
     return redirect(url_for("users", _external="True", _scheme="https",message=message))
 
 @app.route("/userupdate")
+@is_authenticated
+@requires_admin
 def userupdate():
     user_info = get_user_info()
     okta_admin = OktaAdmin(default_settings)
@@ -227,6 +284,8 @@ def userupdate():
     
     
 @app.route("/updateuserinfo", methods=["POST"])
+@is_authenticated
+@requires_admin
 def updateuserinfo():
     user_info = get_user_info()
     okta_admin = OktaAdmin(default_settings)
@@ -256,12 +315,16 @@ def updateuserinfo():
     
 
 @app.route("/usercreate")
+@is_authenticated
+@requires_admin
 def usercreate():
     user_info = get_user_info()
 
     return render_template("usercreate.html", user_info=user_info, oidc=oidc)
     
 @app.route("/createuserinfo", methods=["POST"])
+@is_authenticated
+@requires_admin
 def createuserinfo():
     user_info = get_user_info()
     okta_admin = OktaAdmin(default_settings)
@@ -270,14 +333,10 @@ def createuserinfo():
     email = request.form.get('email')
     mobile_phone = request.form.get('phonenumber')
 
-    # List Group and find a Travel Agency
-    user = okta_admin.get_user(user_info["sub"])
-    group_info = okta_admin.get_user_groups(user["id"])
-    for group_data in group_info:
-        print(group_data)
-        if "TravelAgency_" in group_data["profile"]["name"]:
-            group_name = group_data["profile"]["name"]
-            break
+    #  Group and find a Travel Agency
+    token = oidc.get_access_token()
+    group_name = TokenUtil.get_single_claim_from_token(token,"tagrp")
+       
         
     user_data = {
                 "profile": {
@@ -307,7 +366,6 @@ def get_user_info():
         print("User is not authenticated")
 
     return user_info
-
-
+    
 if __name__ == '__main__':
     app.run(host=os.getenv("IP", "0.0.0.0"), port=int(os.getenv("PORT", 8080)), debug=True)
