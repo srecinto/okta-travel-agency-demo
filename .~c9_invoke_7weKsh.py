@@ -2,7 +2,6 @@ import os
 import base64
 import json
 import csv
-import html
 
 from config import default_settings
 from functools import wraps
@@ -323,36 +322,32 @@ def usercreate():
     
     return render_template("usercreate.html", user_info=user_info, oidc=oidc)
     
-@app.route("/admincreateuser", methods=["POST"])
-def admincreateuser():
-    print("Admin Create User()")
-    
+@app.route("/createuserinfo", methods=["POST"])
+@is_authenticated
+@requires_admin
+def createuserinfo():
+    user_info = get_user_info()
     okta_admin = OktaAdmin(default_settings)
     first_name = request.form.get('firstname')
     last_name = request.form.get('lastname')
     email = request.form.get('email')
-    login = request.form.get('login')
     mobile_phone = request.form.get('phonenumber')
 
-    if not login:
-        login = email
-        
     #  Group and find a Travel Agency
     token = oidc.get_access_token()
     group_name = TokenUtil.get_single_claim_from_token(token,"tagrp")
        
-    
+        
     user_data = {
                 "profile": {
                     "firstName": first_name,
                     "lastName": last_name,
                     "email": email,
-                    "login": login,
+                    "login": email,
                     "mobilePhone": mobile_phone,
                     "travelAgencyGroup": group_name
                 }
             }
-  
     user_create_response = okta_admin.create_user(user_data)
     if user_create_response:
         message = "User " + first_name + " "+  last_name+ " was Created"
@@ -362,47 +357,6 @@ def admincreateuser():
     
     return redirect(url_for("users", _external="True", _scheme="https",message=message))
 
-@app.route("/signupcreateuser", methods=["POST"])
-def signupcreateuser():
-    print("Signup Create User()")
-    
-    okta_admin = OktaAdmin(default_settings)
-    first_name = request.form.get('firstname')
-    last_name = request.form.get('lastname')
-    email = request.form.get('email')
-    login = request.form.get('login')
-    mobile_phone = request.form.get('phonenumber')
-    password = request.form.get('password')
-    group_name =  request.form.get('groupname')
-    
-    if not login:
-        login = email
-
-    user_data = {
-            "profile": {
-                "firstName": first_name,
-                "lastName": last_name,
-                "email": email,
-                "login": login,
-                "mobilePhone": mobile_phone,
-                "travelAgencyGroup": group_name
-            },
-             "credentials": {
-                "password" : { "value": password }
-              }
-        }
-    
-    user_create_response = okta_admin.create_user(user_data)
-    if "errorCode" in user_create_response:
-        print(user_create_response)
-        message = "<p>Error During Registration</p>" + user_create_response['errorCauses'][0]['errorSummary']  
-        return redirect(url_for("signup", _external="True", _scheme="https",message=message))
-    else:
-        print(user_create_response)
-        print("User " + first_name + " "+  last_name + " was Created")
-        return redirect(url_for("login", _external="True", _scheme="https"))
-    
-    return redirect(url_for("signup", _external="True", _scheme="https",message=message))
 
 def get_user_info():
     user_info = None
