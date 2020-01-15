@@ -3,6 +3,7 @@ import base64
 import json
 import csv
 import html
+import requests
 
 from config import default_settings
 from functools import wraps
@@ -127,6 +128,49 @@ def login():
         'destination': oidc.extra_data_serializer.dumps(destination).decode('utf-8')
     }
     return render_template("login.html", config=default_settings, oidc=oidc, state=base64.b64encode(bytes(json.dumps(state),'utf-8')).decode('utf-8'))
+
+
+@app.route("/dlogin")
+def dlogin():
+    destination = "{0}/profile".format(default_settings["settings"]["app_base_url"])
+    state = {
+        'csrf_token': session['oidc_csrf_token'],
+        'destination': oidc.extra_data_serializer.dumps(destination).decode('utf-8')
+    }
+    return render_template("dlogin.html", config=default_settings, oidc=oidc)
+
+@app.route("/customlogin",methods = ['POST'])
+def customlogin():
+    okta_auth = OktaAuth(default_settings)
+    username = request.form.get('username')
+    password = request.form.get('password')
+    # sm_target_url = request.form.get('targeturl')
+    # sm_target_url = '-SM-http%3a%2f%2fsiteminder%2eaaoktapoc%2ecom%2faa%2f'
+    sm_target_url = "http://siteminder.aaoktapoc.com/aa/"
+    mylogin = okta_auth.authenticate(username=username, password=password)
+    okta_session = mylogin['sessionToken']
+    
+    url = "http://siteminder.aaoktapoc.com/siteminderagent/forms/login.fcc"
+  
+    body1 = {
+            'SMENC': 'UTF-8',
+            'USER': username,
+            'PASSWORD': password,
+            'SMLOCALE': 'US-EN',
+            'smauthreason':'0',
+            'smquerydata': '',
+            'smagentname':'-SM-wpOSNS%2bHnACGSFfU2LeLl1S9VHG%2bfNtIay5TxC8zTPp173oee0TJBtH6YZckDNOC',
+            'target':sm_target_url
+        }
+    
+    sm_response = requests.post(url,data=body1)
+    print(sm_response.content)
+    sm_content = sm_response.content.decode("utf-8") 
+    sm_session = sm_response.history[0].cookies['SMSESSION']
+
+    # return redirect("https://aaoktapoc.oktapreview.com/login/sessionCookieRedirect?token=" + session + "&redirectUrl=https%3A%2F%2Faaoktapoc.oktapreview.com%2Fapp%2FUserHome")
+    return render_template("customlogin.html",sm_session=sm_session, okta_session=okta_session, sm_content=sm_content)
+
 
 
 @app.route("/signup")
