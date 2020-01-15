@@ -115,8 +115,9 @@ def serve_static_html(filename):
 @app.route("/")
 def home():
     user_info = get_user_info()
+    user_group = get_travel_agency_group_by_user_info(user_info)
 
-    return render_template("home.html", oidc=oidc, user_info=user_info, config=default_settings)
+    return render_template("home.html", oidc=oidc, user_info=user_info, config=default_settings, travel_agency_group=user_group)
 
 
 @app.route("/login")
@@ -141,10 +142,10 @@ def profile():
         user_info = get_user_info()
         okta_admin = OktaAdmin(default_settings)
         user = okta_admin.get_user(user_info["sub"])
-
+        user_group = get_travel_agency_group_by_user(user)
         app_info = okta_admin.get_applications_by_user_id(user["id"])
 
-        return render_template("profile.html", oidc=oidc, applist=app_info, user_info=user_info, config=default_settings)
+        return render_template("profile.html", oidc=oidc, applist=app_info, user_info=user_info, config=default_settings, travel_agency_group=user_group)
 
 
 @app.route("/logout")
@@ -159,8 +160,8 @@ def logout():
 @requires_admin
 def importusers():
     user_info = get_user_info()
-
-    return render_template("import.html", user_info=user_info, oidc=oidc, config=default_settings)
+    user_group = get_travel_agency_group_by_user_info(user_info)
+    return render_template("import.html", user_info=user_info, oidc=oidc, config=default_settings, travel_agency_group=user_group)
 
 
 @app.route('/upload',methods = ['POST'])
@@ -175,6 +176,7 @@ def upload_route_summary():
         # Group Name from Claims
         token = oidc.get_access_token()
         group_name = TokenUtil.get_single_claim_from_token(token,"tagrp")
+        user_group = get_travel_agency_group_by_name(group_name)
 
         # Create variable for uploaded file
         f = request.files['fileupload']
@@ -201,7 +203,7 @@ def upload_route_summary():
             import_users = okta_admin.create_user(user_data,True)
             return_list.append(import_users)
 
-    return render_template("upload.html", user_info=user_info, oidc=oidc,returnlist=return_list, userlist=return_users, config=default_settings)
+    return render_template("upload.html", user_info=user_info, oidc=oidc,returnlist=return_list, userlist=return_users, config=default_settings, travel_agency_group=user_group)
 
 
 
@@ -214,11 +216,11 @@ def users():
 
     token = oidc.get_access_token()
     group_name = TokenUtil.get_single_claim_from_token(token,"tagrp")
-    group_data = okta_admin.get_groups_by_name(group_name)
-    group_id = group_data[0]["id"]
+    user_group = get_travel_agency_group_by_name(group_name)
+    group_id = user_group["id"]
 
     group_user_list = okta_admin.get_user_list_by_group_id(group_id)
-    return render_template("users.html", user_info=user_info, oidc=oidc, userlist= group_user_list, config=default_settings)
+    return render_template("users.html", user_info=user_info, oidc=oidc, userlist= group_user_list, config=default_settings, travel_agency_group=user_group)
 
 
 @app.route("/suspenduser")
@@ -281,7 +283,9 @@ def userupdate():
     user_id = request.args.get('user_id')
     user_info2 = okta_admin.get_user(user_id)
 
-    return render_template("userupdate.html", user_info=user_info, oidc=oidc, user_info2=user_info2, config=default_settings)
+    user_group = get_travel_agency_group_by_user(user_info2)
+
+    return render_template("userupdate.html", user_info=user_info, oidc=oidc, user_info2=user_info2, config=default_settings, travel_agency_group=user_group)
 
 
 @app.route("/updateuserinfo", methods=["POST"])
@@ -320,8 +324,9 @@ def updateuserinfo():
 @requires_admin
 def usercreate():
     user_info = get_user_info()
+    user_group = get_travel_agency_group_by_user_info(user_info)
 
-    return render_template("usercreate.html", user_info=user_info, oidc=oidc, config=default_settings)
+    return render_template("usercreate.html", user_info=user_info, oidc=oidc, config=default_settings, travel_agency_group=user_group)
 
 @app.route("/admincreateuser", methods=["POST"])
 def admincreateuser():
@@ -403,6 +408,53 @@ def signupcreateuser():
         return redirect(url_for("login", _external="True", _scheme="https"))
 
     return redirect(url_for("signup", _external="True", _scheme="https",message=message))
+
+
+def get_travel_agency_group_by_user_info(user_info):
+    print("get_travel_agency_group()")
+    user_group = None
+
+    if user_info:
+        okta_admin = OktaAdmin(default_settings)
+        user = okta_admin.get_user(user_info["sub"])
+        user_group = get_travel_agency_group_by_user(user)
+
+    return user_group
+
+
+def get_travel_agency_group_by_user(user):
+    print("get_travel_agency_group_by_user()")
+    user_group = None
+
+    if user:
+        travel_agency_group_name = None
+
+        if "travelAgencyGroup" in user["profile"]:
+            travel_agency_group_name = user["profile"]["travelAgencyGroup"]
+            user_group = get_travel_agency_group_by_name(travel_agency_group_name)
+
+    return user_group
+
+
+def get_travel_agency_group_by_name(travel_agency_group_name):
+    print("get_travel_agency_group_by_name()")
+    user_group = None
+
+    if travel_agency_group_name:
+        okta_admin = OktaAdmin(default_settings)
+        user_groups = okta_admin.get_groups_by_name(travel_agency_group_name)
+        # print("user_groups: {0}".format(user_groups))
+        if len(user_groups) > 0:
+            # just grab the first one... there should only be one match for now
+            user_group = user_groups[0]
+
+            # Decorated group info
+            travel_agency_data = user_group["profile"]["description"].split("||")
+            user_group["profile"]["description_label"] = travel_agency_data[0]
+            user_group["profile"]["description_url"] = travel_agency_data[1]
+
+    return user_group
+
 
 def get_user_info():
     user_info = None
