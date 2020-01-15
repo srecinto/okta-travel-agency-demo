@@ -8,6 +8,8 @@ default_settings = {
     "redirect_uri": os.getenv("OKTA_OIDC_REDIRECT_URI", "Okta OIDC Redirect URI Here"),
     "settings": {
         "app_base_url": os.getenv("APP_BASE_URL", "/"),
+        "app_logo": os.getenv("APP_LOGO", "/images/logo_light_blue.png"),
+        "app_favicon": os.getenv("APP_FAVICON", "/images/favicon.ico")
     },
     "client_secret": os.getenv("OKTA_CLIENT_SECRET", "Okta Client Secret Here"),
     "okta_api_token": os.getenv("OKTA_API_TOKEN", "Okta API Token Here"),
