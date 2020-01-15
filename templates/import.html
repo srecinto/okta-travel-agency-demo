@@ -28,13 +28,12 @@
               <h1 class="page-title">Import User</h1>
               <div class="separator-2"></div>
               <!-- page-title end -->
-              <p>Hello, <span>{{ user_info.email }}</span>.</p>
 
               <div class="upload-btn-wrapper">
                 <form action="/upload" method="post" enctype="multipart/form-data">
-                  <input type="file" name="fileupload" id="fileToUpload" class="btn">
+                  <input type="file" name="fileupload" id="fileToUpload" class="btn btn-secondary">
                   </br>
-                  <input type="submit" value="Upload File" name="submit">
+                  <input type="submit" value="Upload File" name="submit" class="btn btn-secondary">
                 </form>
               </div>
 
@@ -43,6 +42,7 @@
           </div>
         </div>
       </section>
+      
       <!-- main-container end -->
 
 {% endblock content %}

@@ -353,6 +353,7 @@ class OktaAdmin:
         return RestUtil.execute_get(url, okta_headers)
 
 
+
     def create_user(self, user, activate_user=False):
         print("OktaAdmin.create_user(user)")
         okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
@@ -382,13 +383,53 @@ class OktaAdmin:
         body = {}
 
         return RestUtil.execute_post(url, body, okta_headers)
+        
+    def suspend_user(self, user_id):
+        print("OktaAdmin.suspend_user(user_id)")
+        okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
+        url = "{base_url}/api/v1/users/{user_id}/lifecycle/suspend".format(
+            base_url=self.okta_config["okta_org_name"],
+            user_id=user_id)
+        print(user_id)
+        body = {}
+        
+        return RestUtil.execute_post(url, body, okta_headers)
+        
+    def unsuspend_user(self, user_id):
+        print("OktaAdmin.unsuspend_user(user_id)")
+        okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
+        url = "{base_url}/api/v1/users/{user_id}/lifecycle/unsuspend".format(
+            base_url=self.okta_config["okta_org_name"],
+            user_id=user_id)
+        body = {}
+
+        return RestUtil.execute_post(url, body, okta_headers)
+        
+    def reset_password_for_user(self, user_id):
+        print("OktaAdmin.unsuspend_user(user_id)")
+        okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
+        url = "{base_url}/api/v1/users/{user_id}/lifecycle/reset_password".format(
+            base_url=self.okta_config["okta_org_name"],
+            user_id=user_id)
+        body = {}
+
+        return RestUtil.execute_post(url, body, okta_headers)
 
     def get_groups_by_name(self, name):
-        print("OktaAdmin.get_groups_by_name(user_id)")
+        print("OktaAdmin.get_groups_by_name(name)")
         okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
         url = "{base_url}/api/v1/groups?q={name}".format(
             base_url=self.okta_config["okta_org_name"],
             name=name)
+
+        return RestUtil.execute_get(url, okta_headers)
+        
+    def get_user_list_by_group_id(self, id):
+        print("OktaAdmin.get_user_list_by_group_id(user_id)")
+        okta_headers = OktaUtil.get_protected_okta_headers(self.okta_config)
+        url = "{base_url}/api/v1/groups/{id}/users".format(
+            base_url=self.okta_config["okta_org_name"],
+            id=id)
 
         return RestUtil.execute_get(url, okta_headers)
 
@@ -668,3 +709,41 @@ class OktaUtil:
         encoded_auth = base64.b64encode(bytes(auth_raw, 'UTF-8')).decode("UTF-8")
 
         return encoded_auth
+
+
+class TokenUtil:
+      
+    @staticmethod
+    def get_single_claim_from_token(token,claim_name):
+        print("get_single_claim_from_token")
+        claims = TokenUtil.get_claims_from_token(token)
+        try:
+            print("claim found")
+            found_claim = claims[claim_name]
+        except:
+            print("claim not found")
+            found_claim = ""
+        return found_claim
+        
+    @staticmethod
+    def get_claims_from_token(token):
+        print("get_claims_from_token(token)")
+        claims = None
+    
+        if token:
+            jwt = token.encode("utf-8")
+    
+            token_payload = jwt.decode().split(".")[1]
+    
+            claims_string = TokenUtil.decode_base64(token_payload)
+    
+            claims = json.loads(claims_string)
+    
+        return claims
+    
+    @staticmethod
+    def decode_base64(data):
+        missing_padding = len(data) % 4
+        if missing_padding > 0:
+            data += "=" * (4 - missing_padding)
+        return base64.urlsafe_b64decode(data)

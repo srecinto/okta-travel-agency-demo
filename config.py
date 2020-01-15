@@ -1,6 +1,5 @@
 import os
 
-
 default_settings = {
     "client_id": os.getenv("OKTA_CLIENT_ID", "Okta Client Id Here"),
     "issuer": os.getenv("OKTA_ISSUER", "Okta Auth Server Issuer Here"),
