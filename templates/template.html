@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="shortcut icon" href="{{config.settings.app_favicon}}">
 
     <!-- Web Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i" rel="stylesheet">
@@ -46,6 +46,11 @@
     <!-- Custom css -->
     <link href="css/custom.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <style type="text/css">
+      .logo img {
+        max-width: 300px;
+      }
+    </style>
   </head>
 
   <!-- body classes:  -->
@@ -162,12 +167,12 @@
 
                   <!-- logo -->
                   <div id="logo" class="logo">
-                    <a href="{{ url_for('home', _external='True', _scheme='https') }}"><img id="logo_img" src="images/logo_light_blue.png" alt="The Project"></a>
+                    <a href="{{ url_for('home', _external='True', _scheme='https') }}"><img id="logo_img" src="{{config.settings.app_logo}}" alt="Travel Agency Portal"></a>
                   </div>
 
                   <!-- name-and-slogan -->
                   <div class="site-slogan">
-                    Multipurpose HTML5 Template
+                    Travel Agency Partner Portal
                   </div>
 
                 </div>
@@ -191,12 +196,12 @@
 
                       <!-- logo -->
                       <div id="logo-mobile" class="logo">
-                        <a href="index.html"><img id="logo-img-mobile" src="images/logo_light_blue.png" alt="The Project"></a>
+                        <a href="index.html"><img id="logo-img-mobile" src="{{config.settings.app_logo}}" alt="Travel Agency Portal"></a>
                       </div>
 
                       <!-- name-and-slogan -->
                       <div class="site-slogan">
-                        Multipurpose HTML5 Template
+                        Travel Agency Partner Portal
                       </div>
 
                     </div>
@@ -258,7 +263,7 @@
               <div class="row">
                 <div class="col-lg-3">
                   <div class="footer-content">
-                    <div class="logo-footer"><img id="logo-footer" src="images/logo_light_blue.png" alt=""></div>
+                    <div class="logo-footer"><img id="logo-footer" src="{{config.settings.app_logo}}" alt=""></div>
                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus illo vel dolorum soluta consectetur doloribus sit. Delectus non tenetur odit dicta vitae debitis suscipit doloribus. Ipsa, aut voluptas quaerat... <a href="page-about.html">Learn More<i class="fa fa-long-arrow-right pl-1"></i></a></p>
                     <div class="separator-2"></div>
                     <nav>
@@ -278,7 +283,7 @@
                     <div class="media margin-clear">
                       <div class="d-flex pr-2">
                         <div class="overlay-container">
-                          <img class="media-object" src="images/blog-thumb-1.jpg" alt="blog-thumb">
+                          <img class="media-object" src="{{config.settings.app_thumb_1}}" alt="blog-thumb">
                           <a href="blog-post.html" class="overlay-link small"><i class="fa fa-link"></i></a>
                         </div>
                       </div>
@@ -291,7 +296,7 @@
                     <div class="media margin-clear">
                       <div class="d-flex pr-2">
                         <div class="overlay-container">
-                          <img class="media-object" src="images/blog-thumb-2.jpg" alt="blog-thumb">
+                          <img class="media-object" src="{{config.settings.app_thumb_2}}" alt="blog-thumb">
                           <a href="blog-post.html" class="overlay-link small"><i class="fa fa-link"></i></a>
                         </div>
                       </div>
@@ -304,7 +309,7 @@
                     <div class="media margin-clear">
                       <div class="d-flex pr-2">
                         <div class="overlay-container">
-                          <img class="media-object" src="images/blog-thumb-3.jpg" alt="blog-thumb">
+                          <img class="media-object" src="{{config.settings.app_thumb_3}}" alt="blog-thumb">
                           <a href="blog-post.html" class="overlay-link small"><i class="fa fa-link"></i></a>
                         </div>
                       </div>
@@ -317,7 +322,7 @@
                     <div class="media margin-clear">
                       <div class="d-flex pr-2">
                         <div class="overlay-container">
-                          <img class="media-object" src="images/blog-thumb-4.jpg" alt="blog-thumb">
+                          <img class="media-object" src="{{config.settings.app_thumb_4}}" alt="blog-thumb">
                           <a href="blog-post.html" class="overlay-link small"><i class="fa fa-link"></i></a>
                         </div>
                       </div>
@@ -338,7 +343,7 @@
                     <div class="row grid-space-10">
                       <div class="col-4 col-lg-6">
                         <div class="overlay-container mb-10">
-                          <img src="images/gallery-1.jpg" alt="">
+                          <img src="{{config.settings.app_gallery_1}}" alt="">
                           <a href="portfolio-item.html" class="overlay-link small">
                             <i class="fa fa-link"></i>
                           </a>
@@ -346,7 +351,7 @@
                       </div>
                       <div class="col-4 col-lg-6">
                         <div class="overlay-container mb-10">
-                          <img src="images/gallery-2.jpg" alt="">
+                          <img src="{{config.settings.app_gallery_2}}" alt="">
                           <a href="portfolio-item.html" class="overlay-link small">
                             <i class="fa fa-link"></i>
                           </a>
@@ -354,7 +359,7 @@
                       </div>
                       <div class="col-4 col-lg-6">
                         <div class="overlay-container mb-10">
-                          <img src="images/gallery-3.jpg" alt="">
+                          <img src="{{config.settings.app_gallery_3}}" alt="">
                           <a href="portfolio-item.html" class="overlay-link small">
                             <i class="fa fa-link"></i>
                           </a>
@@ -362,7 +367,7 @@
                       </div>
                       <div class="col-4 col-lg-6">
                         <div class="overlay-container mb-10">
-                          <img src="images/gallery-4.jpg" alt="">
+                          <img src="{{config.settings.app_gallery_4}}" alt="">
                           <a href="portfolio-item.html" class="overlay-link small">
                             <i class="fa fa-link"></i>
                           </a>
@@ -370,7 +375,7 @@
                       </div>
                       <div class="col-4 col-lg-6">
                         <div class="overlay-container mb-10">
-                          <img src="images/gallery-5.jpg" alt="">
+                          <img src="{{config.settings.app_gallery_5}}" alt="">
                           <a href="portfolio-item.html" class="overlay-link small">
                             <i class="fa fa-link"></i>
                           </a>
@@ -378,7 +383,7 @@
                       </div>
                       <div class="col-4 col-lg-6">
                         <div class="overlay-container mb-10">
-                          <img src="images/gallery-6.jpg" alt="">
+                          <img src="{{config.settings.app_gallery_6}}" alt="">
                           <a href="portfolio-item.html" class="overlay-link small">
                             <i class="fa fa-link"></i>
                           </a>
