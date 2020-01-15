@@ -50,6 +50,10 @@
       .logo img {
         max-width: 300px;
       }
+
+      #logo_img2 {
+        height: 60px;
+      }
     </style>
   </head>
 
@@ -179,7 +183,23 @@
                 <!-- header-first end -->
 
               </div>
-              <div class="col-lg-8 mr-lg-auto">
+
+              <!-- Partner Logo start -->
+              {% if travel_agency_group %}
+              <div class="header-first clearfix">
+                <div id="logo2" class="logo">
+                  <a href="{{ url_for('home', _external='True', _scheme='https') }}"><img id="logo_img2" src="{{travel_agency_group.profile.description_url}}" alt="{{travel_agency_group.profile.description_label}}"></a>
+                </div>
+
+                <!-- name-and-slogan-2 -->
+                <div class="site-slogan">
+                  {{travel_agency_group.profile.description_label}}
+                </div>
+              </div>
+              {% endif %}
+              <!-- Partner Logo end -->
+
+              <div class="col-lg-4 mr-lg-auto">
 
                 <!-- header-second start -->
                 <!-- ================ -->
@@ -196,7 +216,7 @@
 
                       <!-- logo -->
                       <div id="logo-mobile" class="logo">
-                        <a href="index.html"><img id="logo-img-mobile" src="{{config.settings.app_logo}}" alt="Travel Agency Portal"></a>
+                        <img id="logo-img-mobile" src="{{config.settings.app_logo}}" alt="Travel Agency Portal" />
                       </div>
 
                       <!-- name-and-slogan -->
