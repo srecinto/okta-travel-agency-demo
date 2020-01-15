@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="shortcut icon" href="{{config.settings.app_favicon}}">
 
     <!-- Web Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i" rel="stylesheet">
@@ -45,7 +45,14 @@
     <link href="https://global.oktacdn.com/okta-signin-widget/3.2.0/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
 
     <link href="css/custom.css" rel="stylesheet">
-
+    <style>
+      #okta-sign-in {
+        margin: 0px auto 8px;
+      }
+      .main-container {
+        padding: 0px 0;
+      }
+    </style>
   </head>
 
   <!-- body classes:  -->
@@ -75,7 +82,7 @@
               <div class="hc-element-invisible" data-animation-effect="fadeInDownSmall" data-effect-delay="100">
                 <!-- logo -->
                 <div id="logo" class="logo text-center">
-                  <h3 class="margin-clear"><a href="index.html" class="logo-font link-light">The <span class="text-default">Project</span></a></h3>
+                  <h3 class="margin-clear"><a href="{{ url_for('home', _external='True', _scheme='https') }}" class="logo-font link-light">The <span class="text-default">Travel Agency Portal</span></a></h3>
                 </div>
                 <!-- name-and-slogan -->
                 <div class="form-block center-block p-30 light-gray-bg border-clear">
