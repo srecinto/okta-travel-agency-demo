@@ -145,9 +145,9 @@ def customlogin():
     okta_auth = OktaAuth(default_settings)
     username = request.form.get('username')
     password = request.form.get('password')
-    # sm_target_url = request.form.get('targeturl')
-    # sm_target_url = '-SM-http%3a%2f%2fsiteminder%2eaaoktapoc%2ecom%2faa%2f'
-    sm_target_url = "http://siteminder.aaoktapoc.com/aa/"
+   
+    sm_target_url = request.form.get('targeturl')
+    # sm_target_url = "http://siteminder.aaoktapoc.com/aa/"
     mylogin = okta_auth.authenticate(username=username, password=password)
     okta_session = mylogin['sessionToken']
     
@@ -168,9 +168,10 @@ def customlogin():
     print(sm_response.content)
     sm_content = sm_response.content.decode("utf-8") 
     sm_session = sm_response.history[0].cookies['SMSESSION']
-
+      
     # return redirect("https://aaoktapoc.oktapreview.com/login/sessionCookieRedirect?token=" + session + "&redirectUrl=https%3A%2F%2Faaoktapoc.oktapreview.com%2Fapp%2FUserHome")
-    return render_template("customlogin.html",sm_session=sm_session, okta_session=okta_session, sm_content=sm_content)
+    return render_template("customlogin.html",sm_session=sm_session, targeturl=sm_target_url, okta_session=okta_session, sm_content=sm_content)
+    
 
 
 
