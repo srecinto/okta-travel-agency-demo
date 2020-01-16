@@ -98,6 +98,9 @@
                       clientId: "{{config.client_id}}",
                       redirectUri: "{{config.redirect_uri}}",
                       logo: 'https://logo.clearbit.com/aa.com',
+                      idps: [
+                        {type: 'MICROSOFT', id: '0oapa3zybsxCMChDs0h7'}
+                      ],
                       authParams: {
                         issuer: "{{config.issuer}}",
                         responseType: 'code',
