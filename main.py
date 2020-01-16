@@ -149,6 +149,10 @@ def customlogin():
     sm_target_url = request.form.get('targeturl')
     # sm_target_url = "http://siteminder.aaoktapoc.com/aa/"
     mylogin = okta_auth.authenticate(username=username, password=password)
+    if "errorCode" in mylogin:
+        print(mylogin)
+        return mylogin
+        
     okta_session = mylogin['sessionToken']
     
     url = "http://siteminder.aaoktapoc.com/siteminderagent/forms/login.fcc"
@@ -166,9 +170,13 @@ def customlogin():
     
     sm_response = requests.post(url,data=body1)
     print(sm_response.content)
+    sm_response_string = sm_response.content.decode("utf-8") 
+    if "Your credentials are not valid for" in sm_response_string:
+        return sm_response_string
+        
     sm_content = sm_response.content.decode("utf-8") 
     sm_session = sm_response.history[0].cookies['SMSESSION']
-      
+    
     # return redirect("https://aaoktapoc.oktapreview.com/login/sessionCookieRedirect?token=" + session + "&redirectUrl=https%3A%2F%2Faaoktapoc.oktapreview.com%2Fapp%2FUserHome")
     return render_template("customlogin.html",sm_session=sm_session, targeturl=sm_target_url, okta_session=okta_session, sm_content=sm_content)
     
