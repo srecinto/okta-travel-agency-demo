@@ -39,7 +39,7 @@
     <link href="css/typography-default.css" rel="stylesheet" >
     <!-- Color Scheme (In order to change the color scheme, replace the blue.css with the color scheme that you prefer) -->
     <link href="css/skins/light_blue.css" rel="stylesheet">
-
+    <script src="plugins/jquery.min.js"></script>
    
     <link href="css/custom.css" rel="stylesheet">
 
@@ -69,9 +69,10 @@
       };
       
       $(document).ready(function () { 
-          var targeturl = getUrlParameter ('targeturl');
+          var targeturl = getUrlParameter ('TARGET');
+          var targeturl = targeturl.replace("-SM-", "");
           console.log(targeturl)
-          $('input[name="targeturl"]').val(groupname);
+          $('input[name="targeturl"]').val(targeturl);
       });
       </script>
 
@@ -81,21 +82,22 @@
 
     <!-- page wrapper start -->
     <!-- ================ -->
-    <div class="page-wrapper">
-      <!-- background image -->
-      <div class="fullscreen-bg"></div>
-
+    <div>
       <!-- banner start -->
       <!-- ================ -->
-      <div class="pv-40 dark-translucent-bg">
+      <div class="boxed"
+      <div class="fullscreen-bg">
+        <div class="container">
+            <div class="row justify-content-center">
+              <br>
+              <img id="logo_img" src="https://aa-poc-travel-agency.s3.us-east-2.amazonaws.com/img/aa-logo.png" alt="Travel Agency Portal">
+              <br><br?
+            </div>
+        </div>
         <div class="container">
           <div class="row justify-content-center">
             <div class="col-auto">
               <div class="hc-element-invisible" data-animation-effect="fadeInDownSmall" data-effect-delay="100">
-                <!-- logo -->
-                <div id="logo" class="logo text-center">
-                  <h3 class="margin-clear"><a href="index.html" class="logo-font link-light">The <span class="text-default">Project</span></a></h3>
-                </div>
                        <!-- main start -->
                         <!-- ================ -->
                         <div class="main hc-element-invisible" data-animation-effect="fadeInUpSmall" data-effect-delay="100">
@@ -131,6 +133,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
       <!-- banner end -->
 

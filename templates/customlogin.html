@@ -59,24 +59,37 @@
     <!-- page wrapper start -->
     <!-- ================ -->
     <div class="page-wrapper">
-      <!-- background image -->
+      <div class="boxed">
+           
       <div class="fullscreen-bg"></div>
 
-      <!-- banner start -->
+       <!-- main-container start -->
       <!-- ================ -->
-      <div class="pv-40 dark-translucent-bg">
+      <section class="main-container">
+
         <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-auto">
-              <div class="hc-element-invisible" data-animation-effect="fadeInDownSmall" data-effect-delay="100">
-                <!-- logo -->
-                <div id="logo" class="logo text-center">
-                  <h3 class="margin-clear"><a href="index.html" class="logo-font link-light">The <span class="text-default">Project</span></a></h3>
-                </div>
-                       <!-- main start -->
-                        <!-- ================ -->
-                        <div class="main hc-element-invisible" data-animation-effect="fadeInUpSmall" data-effect-delay="100">
-                           <h2 class="title">You Are Logged In</h2>
+          <div class="row">
+            <!-- main start -->
+            <!-- ================ -->
+            
+            <div class="main col-12" style"overflow-wrap !important" >
+
+              <!-- page-title start -->
+              <!-- ================ -->
+              <div class="container">
+                  <div class="row justify-content-center">
+                    <br>
+                    <img id="logo_img" src="https://aa-poc-travel-agency.s3.us-east-2.amazonaws.com/img/aa-logo.png" alt="Travel Agency Portal">
+                  </div>
+              </div>
+              <br><br>
+              <div class="separator-2"></div>
+              <!-- page-title end -->
+              <br><br>
+              <div class="main hc-element-invisible" data-animation-effect="fadeInUpSmall" data-effect-delay="100">
+                <div class="container">
+                  <div style="overflow-wrap: break-word">
+                            <h1>My Profile</h1>
                             {{ sm_content|safe }}
                             <h1>Okta Login</h1>
                             <br>Session ID = {{ okta_session }} <br>
@@ -84,17 +97,18 @@
                             <br><br>
                             <h1>SiteMinder Login</h1>
                             <br>Session ID = {{ sm_session }} <br>
-                            <br><a target="_blank" href="http://siteminder.aaoktapoc.com/aa/">Go To SiteMinder</a>
-                          
-                        </div>
-                        <!-- main end -->
+                            <br><a target="_blank" href="http://siteminder.aaoktapoc.com/setcookie/setcookie.asp?session={{ sm_session }}&target={{ targeturl }}">Go To SiteMinder</a>
+                  </div>
+                 </div>
+              </div>
+            </div>
+            <!-- main end -->
               </div>
             </div>
           </div>
+      <!-- banner end -->
         </div>
       </div>
-      <!-- banner end -->
-
     </div>
     <!-- page-wrapper end -->
 
