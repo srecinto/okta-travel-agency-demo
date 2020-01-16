@@ -69,7 +69,8 @@
       };
       
       $(document).ready(function () { 
-          var targeturl = getUrlParameter ('targeturl');
+          var targeturl = getUrlParameter ('TARGET');
+          var res = str.replace("-SM-", "");
           console.log(targeturl)
           $('input[name="targeturl"]').val(targeturl);
       });
