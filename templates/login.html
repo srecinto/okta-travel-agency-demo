@@ -101,6 +101,7 @@
                       idps: [
                         {type: 'MICROSOFT', id: '0oapa3zybsxCMChDs0h7'}
                       ],
+                      idpDisplay: "SECONDARY",
                       authParams: {
                         issuer: "{{config.issuer}}",
                         responseType: 'code',
@@ -108,6 +109,7 @@
                         display: 'page',
                         scopes: ['openid', 'profile', 'email']
                       }
+
                     }).renderEl(
                       { el: '#sign-in-widget' },
                       function (res) {}
