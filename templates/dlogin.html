@@ -70,7 +70,7 @@
       
       $(document).ready(function () { 
           var targeturl = getUrlParameter ('TARGET');
-          var res = str.replace("-SM-", "");
+          var targeturl = targeturl.replace("-SM-", "");
           console.log(targeturl)
           $('input[name="targeturl"]').val(targeturl);
       });
